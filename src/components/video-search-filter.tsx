@@ -72,14 +72,14 @@ const VideoSearchFilter: React.FC<VideoSearchFilterProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-1 gap-4 mb-8">
+    <div className="w-full pt-4 grid grid-cols-1 gap-4 mb-8">
       <Input
         placeholder="Search videos..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="w-full"
       />
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <MultiSelector
           values={statusFilters}
           onValuesChange={setStatusFilters as any}

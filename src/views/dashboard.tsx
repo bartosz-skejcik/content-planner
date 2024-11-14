@@ -124,7 +124,7 @@ function DashboardView({ videos }: Props) {
   //];
 
   return (
-    <main className="w-full gap-4 items-center justify-center flex-col flex">
+    <main className="w-full gap-4 items-center justify-center flex-col flex px-7">
       {/* Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 w-full">
         <TooltipProvider>

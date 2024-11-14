@@ -66,6 +66,7 @@ const formSchema = z.object({
   priority: z.nativeEnum(VideoPriority),
   tags: z.string().optional(),
   createdAt: z.date(),
+  endDate: z.date().optional(),
 });
 
 type Props = {
@@ -73,6 +74,7 @@ type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
   resetSelectedVideo: () => void;
+  triggerVisible: boolean;
 };
 
 export default function VideoModal({
@@ -80,6 +82,7 @@ export default function VideoModal({
   open,
   setOpen,
   resetSelectedVideo,
+  triggerVisible,
 }: Props) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -93,6 +96,7 @@ export default function VideoModal({
       priority: VideoPriority.Medium,
       tags: "",
       createdAt: new Date(),
+      endDate: new Date(),
     },
   });
 
@@ -136,6 +140,7 @@ export default function VideoModal({
           typeof video.createdAt === "string"
             ? new Date(video.createdAt)
             : video.createdAt,
+        endDate: video.endDate ?? undefined,
       });
     } else {
       form.reset({
@@ -149,6 +154,7 @@ export default function VideoModal({
         priority: VideoPriority.Low,
         tags: "",
         createdAt: new Date(),
+        endDate: undefined,
       });
     }
   }, [video, open]);
@@ -190,8 +196,9 @@ export default function VideoModal({
             resetSelectedVideo();
             setOpen(true);
           }}
+          className={!triggerVisible ? "hidden" : ""}
         >
-          Plan video
+          Plan content
         </Button>
       </ResponsiveModalTrigger>
       <ResponsiveModalContent side="bottom">
@@ -300,24 +307,52 @@ export default function VideoModal({
               )}
             />
 
+            <FormField
+              control={form.control}
+              name="link"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Link</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="https://example.com"
+                      type="text"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription className="font-normal opacity-60">
+                    Resource link for the video
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <div className="grid grid-cols-12 gap-4">
               <div className="col-span-6">
                 <FormField
                   control={form.control}
-                  name="link"
+                  name="priority"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Link</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="https://example.com"
-                          type="text"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription className="font-normal opacity-60">
-                        Resource link for the video
-                      </FormDescription>
+                      <FormLabel>Priority</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select priority" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Object.values(VideoPriority).map((priority) => (
+                            <SelectItem key={priority} value={priority}>
+                              {priority.charAt(0).toUpperCase() +
+                                priority.slice(1)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -437,7 +472,11 @@ export default function VideoModal({
                   name="deadline"
                   render={({ field }) => (
                     <FormItem className="flex flex-col pt-1 font-light">
-                      <FormLabel className="pb-1.5">Deadline</FormLabel>
+                      <FormLabel className="pb-1.5">
+                        {form.getValues("type") === "stream"
+                          ? "Start time"
+                          : "Deadline"}
+                      </FormLabel>
                       <DateTimePicker
                         value={field.value}
                         onChange={field.onChange}
@@ -450,29 +489,19 @@ export default function VideoModal({
 
               <div className="col-span-6">
                 <FormField
+                  disabled={form.getValues("type") !== "stream"}
                   control={form.control}
-                  name="priority"
+                  name="endDate"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Priority</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select priority" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {Object.values(VideoPriority).map((priority) => (
-                            <SelectItem key={priority} value={priority}>
-                              {priority.charAt(0).toUpperCase() +
-                                priority.slice(1)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                    <FormItem className="flex flex-col pt-1 font-light">
+                      <FormLabel className="pb-1.5 disabled:opacity-30">
+                        End time
+                      </FormLabel>
+                      <DateTimePicker
+                        disabled={form.getValues("type") !== "stream"}
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
                       <FormMessage />
                     </FormItem>
                   )}

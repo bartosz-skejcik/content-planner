@@ -42,23 +42,22 @@ function App() {
           } as React.CSSProperties
         }
       >
-        <AppSidebar onNavigate={setActiveTab} />
+        <AppSidebar onNavigate={setActiveTab} currentTab={activeTab} />
         <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 px-4">
+          <header className="flex shrink-0 sticky top-0 bg-background items-center gap-2 px-4 pt-4 pb-3">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
             {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
             <ModeToggle />
-            {activeTab === "videos" && (
-              <VideoModal
-                video={selectedVideo}
-                open={isModalOpen}
-                setOpen={setIsModalOpen}
-                resetSelectedVideo={() => setSelectedVideo(null)}
-              />
-            )}
+            <VideoModal
+              video={selectedVideo}
+              open={isModalOpen}
+              setOpen={setIsModalOpen}
+              resetSelectedVideo={() => setSelectedVideo(null)}
+              triggerVisible={activeTab === "videos"}
+            />
           </header>
-          <div className="flex flex-1 justify-start flex-col gap-4 p-4 pt-0 w-11/12 lg:w-5/6 mx-auto">
+          <div className="flex flex-1 justify-start flex-col gap-4 w-full mx-auto">
             {activeTab === "videos" ? (
               <VideosView
                 videos={videos}
@@ -68,7 +67,13 @@ function App() {
             ) : activeTab === "dashboard" ? (
               <DashboardView videos={videos} />
             ) : (
-              <ScheduleView videos={videos} />
+              <ScheduleView
+                openModal={() => {
+                  setSelectedVideo(null);
+                  setIsModalOpen(true);
+                }}
+                videos={videos}
+              />
             )}
           </div>
         </SidebarInset>

@@ -17,7 +17,7 @@ function VideosView({ videos, setActiveVideo, openModal }: Props) {
   };
 
   return (
-    <main className="w-full gap-4 items-center justify-center flex-col flex">
+    <main className="w-full gap-4 items-center justify-center flex-col flex px-7">
       <VideoSearchFilter videos={videos} onFilter={handleFilter} />
       {filteredVideos.map((video) => (
         <VideoCard

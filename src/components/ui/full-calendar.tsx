@@ -34,15 +34,19 @@ import {
   useState,
 } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { ChartColumnIncreasing, Clock, Flag, Tag } from "lucide-react";
+import { getStatusColor } from "@/types/video";
 
 const monthEventVariants = cva("size-2 rounded-full", {
   variants: {
     variant: {
       default: "bg-primary",
-      blue: "bg-blue-500",
-      green: "bg-green-500",
-      pink: "bg-pink-500",
-      purple: "bg-purple-500",
+      youtube: "bg-red-500",
+      twitch: "bg-purple-500",
+      tiktok: "bg-pink-500",
+      instagram: "bg-amber-500",
+      twitter: "bg-blue-500",
     },
   },
   defaultVariants: {
@@ -54,10 +58,11 @@ const dayEventVariants = cva("font-bold border-l-4 rounded p-2 text-xs", {
   variants: {
     variant: {
       default: "bg-muted/30 text-muted-foreground border-muted",
-      blue: "bg-blue-500/30 text-blue-600 border-blue-500",
-      green: "bg-green-500/30 text-green-600 border-green-500",
-      pink: "bg-pink-500/30 text-pink-600 border-pink-500",
-      purple: "bg-purple-500/30 text-purple-600 border-purple-500",
+      youtube: "bg-red-500/30 text-red-600 border-red-500",
+      twitch: "bg-purple-500/30 text-purple-600 border-purple-500",
+      tiktok: "bg-pink-500/30 text-pink-600 border-pink-500",
+      instagram: "bg-amber-500/30 text-amber-600 border-amber-500",
+      twitter: "bg-blue-500/30 text-blue-600 border-blue-500",
     },
   },
   defaultVariants: {
@@ -89,6 +94,9 @@ export type CalendarEvent = {
   end: Date;
   title: string;
   color?: VariantProps<typeof monthEventVariants>["variant"];
+  priority: string;
+  status: string;
+  type: string;
 };
 
 type CalendarProps = {
@@ -146,6 +154,7 @@ const Calendar = ({
         setDate,
         events,
         setEvents,
+        // @ts-ignore
         locale,
         enableHotkeys,
         onEventClick,
@@ -192,31 +201,133 @@ const EventGroup = ({
   events: CalendarEvent[];
   hour: Date;
 }) => {
-  return (
-    <div className="h-20 border-t last:border-b">
-      {events
-        .filter((event) => isSameHour(event.start, hour))
-        .map((event) => {
-          const hoursDifference =
-            differenceInMinutes(event.end, event.start) / 60;
-          const startPosition = event.start.getMinutes() / 60;
+  // Helper function to check if two events overlap
+  const eventsOverlap = (event1: CalendarEvent, event2: CalendarEvent) => {
+    return event1.start < event2.end && event2.start < event1.end;
+  };
 
-          return (
-            <div
-              key={event.id}
-              className={cn(
-                "relative",
-                dayEventVariants({ variant: event.color }),
-              )}
-              style={{
-                top: `${startPosition * 100}%`,
-                height: `${hoursDifference * 100}%`,
-              }}
-            >
-              {event.title}
-            </div>
-          );
-        })}
+  // Group overlapping events together
+  const groupOverlappingEvents = (hourEvents: CalendarEvent[]) => {
+    const groups: CalendarEvent[][] = [];
+
+    hourEvents.sort((a, b) => a.start.getTime() - b.start.getTime());
+
+    for (const event of hourEvents) {
+      let addedToGroup = false;
+
+      for (const group of groups) {
+        if (group.some((groupEvent) => eventsOverlap(event, groupEvent))) {
+          group.push(event);
+          addedToGroup = true;
+          break;
+        }
+      }
+
+      if (!addedToGroup) {
+        groups.push([event]);
+      }
+    }
+
+    return groups;
+  };
+
+  // Get events that start in this hour
+  const hourEvents = events.filter((event) => isSameHour(event.start, hour));
+
+  // Group overlapping events
+  const eventGroups = groupOverlappingEvents(hourEvents);
+
+  return (
+    <div className="h-20 border-t last:border-b relative">
+      {eventGroups.map((group, groupIndex) => (
+        <div key={groupIndex} className="absolute z-10 w-full h-full">
+          {group.map((event, eventIndex) => {
+            const hoursDifference =
+              differenceInMinutes(event.end, event.start) / 60;
+            const startPosition = event.start.getMinutes() / 60;
+            const width = 100 / group.length;
+            const left = eventIndex * width;
+
+            // Calculate z-index based on start time (later events on top)
+            const zIndex = event.start.getTime();
+
+            return (
+              <Popover key={event.id}>
+                <PopoverTrigger asChild>
+                  <div
+                    className={cn(
+                      "absolute cursor-pointer overflow-hidden text-sm",
+                      dayEventVariants({ variant: event.color }),
+                    )}
+                    style={{
+                      top: `${startPosition * 100}%`,
+                      height: `${hoursDifference * 100}%`,
+                      left: `${left}%`,
+                      width: `${width}%`,
+                      zIndex,
+                    }}
+                  >
+                    <div>{event.title}</div>
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent
+                  align="end"
+                  className="text-sm font-normal p-2 gap-2 flex h-24 flex-row"
+                >
+                  <div
+                    className={cn(
+                      monthEventVariants({ variant: event.color }),
+                      "h-full w-1 rounded-full",
+                    )}
+                  />
+                  <div className="h-full w-full flex flex-col items-start justify-start gap-3">
+                    <p>
+                      {event.title.length > 35
+                        ? event.title.substring(0, 35) + "..."
+                        : event.title}
+                    </p>
+                    <div className="grid grid-cols-2 gap-x-5 gap-y-2.5">
+                      <time className="text-muted-foreground text-xs text-center flex gap-1">
+                        <Clock className="inline-flex w-4 h-4" />
+                        {format(event.start, "HH:mm")} -{" "}
+                        {format(event.end, "HH:mm")}
+                      </time>
+                      <div
+                        className={cn(
+                          "capitalize text-muted-foreground text-xs text-center flex gap-1",
+                          event.priority === "high"
+                            ? "text-red-500"
+                            : event.priority === "medium"
+                              ? "text-yellow-500"
+                              : "text-green-500",
+                        )}
+                      >
+                        <ChartColumnIncreasing className="w-4 h-4" />
+                        {event.priority}
+                      </div>
+                      <div
+                        className={cn(
+                          "capitalize text-muted-foreground text-xs text-center flex gap-1",
+                        )}
+                        style={{
+                          color: getStatusColor(event.status as any).bg,
+                        }}
+                      >
+                        <Flag className="w-4 h-4" />
+                        {event.status}
+                      </div>
+                      <div className="capitalize text-muted-foreground text-xs text-center flex gap-1">
+                        <Tag className="w-4 h-4" />
+                        {event.type}
+                      </div>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            );
+          })}
+        </div>
+      ))}
     </div>
   );
 };
@@ -269,7 +380,7 @@ const CalendarWeekView = () => {
 
   return (
     <div className="flex flex-col relative overflow-auto h-full">
-      <div className="flex sticky top-0 bg-card z-10 border-b mb-3">
+      <div className="flex sticky top-0 bg-card z-20 border-b mb-3">
         <div className="w-12"></div>
         {headerDays.map((date, i) => (
           <div
@@ -370,21 +481,75 @@ const CalendarMonthView = () => {
 
               {currentEvents.map((event) => {
                 return (
-                  <div
-                    key={event.id}
-                    className="px-1 rounded text-sm flex items-center gap-1"
-                  >
-                    <div
-                      className={cn(
-                        "shrink-0",
-                        monthEventVariants({ variant: event.color }),
-                      )}
-                    ></div>
-                    <span className="flex-1 truncate">{event.title}</span>
-                    <time className="tabular-nums text-muted-foreground/50 text-xs">
-                      {format(event.start, "HH:mm")}
-                    </time>
-                  </div>
+                  <Popover key={event.id}>
+                    <PopoverTrigger asChild>
+                      <div className="px-1 hover:bg-muted transition-all duration-100 rounded text-sm flex items-center gap-1 cursor-pointer">
+                        <div
+                          className={cn(
+                            "shrink-0",
+                            monthEventVariants({ variant: event.color }),
+                          )}
+                        ></div>
+                        <span className="flex-1 truncate">{event.title}</span>
+                        <time className="tabular-nums text-muted-foreground/50 text-xs">
+                          {format(event.start, "HH:mm")}
+                        </time>
+                      </div>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      align="end"
+                      className="text-sm font-normal p-2 gap-2 flex h-24 flex-row"
+                    >
+                      <div
+                        className={cn(
+                          monthEventVariants({ variant: event.color }),
+                          "h-full w-1 rounded-full",
+                        )}
+                      ></div>
+                      <div className="h-full w-full flex flex-col items-start justify-start gap-3">
+                        <p>
+                          {event.title.length > 35
+                            ? event.title.substring(0, 35) + "..."
+                            : event.title}
+                        </p>
+                        <div className="grid grid-cols-2 gap-x-5 gap-y-2.5">
+                          <time className="text-muted-foreground text-xs text-center flex gap-1">
+                            <Clock className="inline-flex w-4 h-4" />
+                            {format(event.start, "HH:mm")} -{" "}
+                            {format(event.end, "HH:mm")}
+                          </time>
+                          <div
+                            className={cn(
+                              "capitalize text-muted-foreground text-xs text-center flex gap-1",
+                              event.priority === "high"
+                                ? "text-red-500"
+                                : event.priority === "medium"
+                                  ? "text-yellow-500"
+                                  : "text-green-500",
+                            )}
+                          >
+                            <ChartColumnIncreasing className="w-4 h-4" />
+                            {event.priority}
+                          </div>
+                          <div
+                            className={cn(
+                              "capitalize text-muted-foreground text-xs text-center flex gap-1",
+                            )}
+                            style={{
+                              color: getStatusColor(event.status as any).bg,
+                            }}
+                          >
+                            <Flag className="w-4 h-4" />
+                            {event.status}
+                          </div>
+                          <div className="capitalize text-muted-foreground text-xs text-center flex gap-1">
+                            <Tag className="w-4 h-4" />
+                            {event.type}
+                          </div>
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 );
               })}
             </div>

@@ -28,6 +28,11 @@ const videoSchema = z.object({
     .string()
     .transform((val) => new Date(val))
     .or(z.date()),
+  endDate: z
+    .string()
+    .transform((val) => new Date(val))
+    .or(z.date())
+    .optional(),
   updatedAt: z
     .string()
     .transform((val) => new Date(val))

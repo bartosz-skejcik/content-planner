@@ -13,7 +13,7 @@ export enum VideoStatus {
 
 export enum VideoType {
   Tutorial = "tutorial",
-  Devlog = "devlog",
+  Vlog = "vlog",
   Review = "review",
   Talking = "talking",
   Stream = "stream",
@@ -40,6 +40,7 @@ export interface Video {
   description: string;
   link?: string;
   status: VideoStatus;
+  endDate?: Date;
   platform?: VideoPlatform;
   type: VideoType;
   priority: VideoPriority;

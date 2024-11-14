@@ -201,7 +201,7 @@ const MultiSelector = ({
       <Command
         onKeyDown={handleKeyDown}
         className={cn(
-          "overflow-visible bg-transparent flex flex-col font-normal",
+          "overflow-visible cursor-pointer bg-transparent flex flex-col font-normal",
           className,
         )}
         dir={dir}
@@ -291,7 +291,7 @@ const MultiSelectorInput = forwardRef<
       onFocus={() => setOpen(true)}
       onClick={() => setActiveIndex(-1)}
       className={cn(
-        "ml-2 bg-transparent outline-none placeholder:text-muted-foreground flex-1",
+        "ml-2 font-light bg-transparent cursor-pointer outline-none placeholder:text-muted-foreground flex-1",
         className,
         activeIndex !== -1 && "caret-transparent",
       )}

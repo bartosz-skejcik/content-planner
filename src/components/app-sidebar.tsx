@@ -30,11 +30,12 @@ const data = {
 
 interface Props extends ComponentProps<typeof Sidebar> {
   onNavigate: (value: ActiveTab) => void;
+  currentTab: ActiveTab;
 }
 
-export function AppSidebar({ onNavigate, ...props }: Props) {
+export function AppSidebar({ onNavigate, currentTab, ...props }: Props) {
   return (
-    <Sidebar variant="floating" {...props}>
+    <Sidebar variant="floating" collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -60,7 +61,7 @@ export function AppSidebar({ onNavigate, ...props }: Props) {
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton
                     asChild
-                    isActive={item.name === "Messages & media"}
+                    isActive={currentTab === item.componentId}
                     onClick={() => onNavigate(item.componentId as ActiveTab)}
                   >
                     <a href="#">
