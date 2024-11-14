@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { cn } from "@/lib/utils";
+//import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,14 +23,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { format } from "date-fns";
+//import { format } from "date-fns";
+//import {
+//  Popover,
+//  PopoverContent,
+//  PopoverTrigger,
+//} from "@/components/ui/popover";
+//import { Calendar } from "@/components/ui/calendar";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { Calendar as CalendarIcon, WandSparkles } from "lucide-react";
+  //Calendar as CalendarIcon,
+  WandSparkles,
+} from "lucide-react";
 import {
   ResponsiveModal,
   ResponsiveModalContent,
@@ -50,6 +53,7 @@ import {
 import { useVideoStore } from "@/stores/videoStore";
 import { invoke } from "@tauri-apps/api/core";
 import { Badge } from "./ui/badge";
+import { DateTimePicker } from "./ui/datetime";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -434,34 +438,10 @@ export default function VideoModal({
                   render={({ field }) => (
                     <FormItem className="flex flex-col pt-1 font-light">
                       <FormLabel className="pb-1.5">Deadline</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="muted"
-                              className={cn(
-                                "w-full pl-3 text-left font-light",
-                                !field.value && "text-muted-foreground",
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
+                      <DateTimePicker
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
                       <FormMessage />
                     </FormItem>
                   )}

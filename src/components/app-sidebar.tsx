@@ -1,4 +1,4 @@
-import { GalleryVerticalEnd } from "lucide-react";
+import { Calendar, GalleryVerticalEnd } from "lucide-react";
 import {
   Home,
   //Link,
@@ -23,6 +23,7 @@ const data = {
   nav: [
     { name: "Dashboard", icon: Home, componentId: "dashboard" },
     { name: "Videos", icon: Menu, componentId: "videos" },
+    { name: "Schedule", icon: Calendar, componentId: "schedule" },
     //{ name: "Connected accounts", icon: Link, componentId: "accounts" },
   ],
 };

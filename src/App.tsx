@@ -15,8 +15,9 @@ import { useVideoStore } from "@/stores/videoStore"; // Import the Zustand store
 import VideoModal from "@/components/video-modal";
 import { Video } from "@/types/video";
 import { Toaster } from "sonner";
+import ScheduleView from "./views/schedule";
 
-export type ActiveTab = "videos" | "dashboard";
+export type ActiveTab = "videos" | "dashboard" | "schedule";
 
 function App() {
   // Use the Zustand store to access the videos
@@ -57,15 +58,17 @@ function App() {
               />
             )}
           </header>
-          <div className="flex flex-1 justify-start flex-col gap-4 p-4 pt-0 w-11/12 lg:w-3/4 mx-auto">
+          <div className="flex flex-1 justify-start flex-col gap-4 p-4 pt-0 w-11/12 lg:w-5/6 mx-auto">
             {activeTab === "videos" ? (
               <VideosView
                 videos={videos}
                 setActiveVideo={setSelectedVideo}
                 openModal={setIsModalOpen}
               />
-            ) : (
+            ) : activeTab === "dashboard" ? (
               <DashboardView videos={videos} />
+            ) : (
+              <ScheduleView videos={videos} />
             )}
           </div>
         </SidebarInset>
