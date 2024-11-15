@@ -67,65 +67,63 @@ function ScheduleView({ videos, openModal }: Props) {
 
   return (
     <main className="w-full gap-4 items-center justify-center flex-col flex">
-      {events.length > 0 && (
-        <Calendar events={events}>
-          <div className="h-dvh w-full py-6 flex flex-col">
-            <div className="flex px-6 items-center gap-2 mb-6">
-              <CalendarViewTrigger
-                className="aria-[current=true]:bg-accent font-normal text-sm"
-                view="day"
-              >
-                Day
-              </CalendarViewTrigger>
-              <CalendarViewTrigger
-                view="week"
-                className="aria-[current=true]:bg-accent font-normal text-sm"
-              >
-                Week
-              </CalendarViewTrigger>
-              <CalendarViewTrigger
-                view="month"
-                className="aria-[current=true]:bg-accent font-normal text-sm"
-              >
-                Month
-              </CalendarViewTrigger>
+      <Calendar events={events}>
+        <div className="h-dvh w-full py-6 flex flex-col">
+          <div className="flex px-6 items-center gap-2 mb-6">
+            <CalendarViewTrigger
+              className="aria-[current=true]:bg-accent font-normal text-sm"
+              view="day"
+            >
+              Day
+            </CalendarViewTrigger>
+            <CalendarViewTrigger
+              view="week"
+              className="aria-[current=true]:bg-accent font-normal text-sm"
+            >
+              Week
+            </CalendarViewTrigger>
+            <CalendarViewTrigger
+              view="month"
+              className="aria-[current=true]:bg-accent font-normal text-sm"
+            >
+              Month
+            </CalendarViewTrigger>
 
-              <span className="flex-1" />
+            <span className="flex-1" />
 
-              <CalendarCurrentDate />
+            <CalendarCurrentDate />
 
-              <CalendarPrevTrigger>
-                <ChevronLeft size={20} />
-                <span className="sr-only">Previous</span>
-              </CalendarPrevTrigger>
+            <CalendarPrevTrigger>
+              <ChevronLeft size={20} />
+              <span className="sr-only">Previous</span>
+            </CalendarPrevTrigger>
 
-              <CalendarTodayTrigger className="font-normal">
-                Today
-              </CalendarTodayTrigger>
+            <CalendarTodayTrigger className="font-normal">
+              Today
+            </CalendarTodayTrigger>
 
-              <CalendarNextTrigger>
-                <ChevronRight size={20} />
-                <span className="sr-only">Next</span>
-              </CalendarNextTrigger>
+            <CalendarNextTrigger>
+              <ChevronRight size={20} />
+              <span className="sr-only">Next</span>
+            </CalendarNextTrigger>
 
-              <Button
-                variant="default"
-                className="font-normal"
-                onClick={openModal}
-              >
-                Plan content
-              </Button>
-            </div>
-
-            <div className="flex-1 overflow-auto px-6 relative">
-              <CalendarDayView />
-              <CalendarWeekView />
-              <CalendarMonthView />
-              <CalendarYearView />
-            </div>
+            <Button
+              variant="default"
+              className="font-normal"
+              onClick={openModal}
+            >
+              Plan content
+            </Button>
           </div>
-        </Calendar>
-      )}
+
+          <div className="flex-1 overflow-auto px-6 relative">
+            <CalendarDayView />
+            <CalendarWeekView />
+            <CalendarMonthView />
+            <CalendarYearView />
+          </div>
+        </div>
+      </Calendar>
     </main>
   );
 }
