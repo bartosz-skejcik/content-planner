@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -23,13 +23,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-//import { format } from "date-fns";
-//import {
-//  Popover,
-//  PopoverContent,
-//  PopoverTrigger,
-//} from "@/components/ui/popover";
-//import { Calendar } from "@/components/ui/calendar";
 import {
   //Calendar as CalendarIcon,
   WandSparkles,
@@ -60,13 +53,13 @@ const formSchema = z.object({
   link: z.string().url("Invalid URL").optional(),
   description: z.string(),
   status: z.nativeEnum(VideoStatus),
-  platform: z.nativeEnum(VideoPlatform).optional(),
+  platform: z.nativeEnum(VideoPlatform),
   type: z.nativeEnum(VideoType),
   deadline: z.date(),
   priority: z.nativeEnum(VideoPriority),
   tags: z.string().optional(),
-  createdAt: z.date(),
-  endDate: z.date().optional(),
+  created_at: z.date(),
+  end_date: z.date().optional(),
 });
 
 type Props = {
@@ -84,6 +77,7 @@ export default function VideoModal({
   resetSelectedVideo,
   triggerVisible,
 }: Props) {
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -95,8 +89,8 @@ export default function VideoModal({
       deadline: new Date(),
       priority: VideoPriority.Medium,
       tags: "",
-      createdAt: new Date(),
-      endDate: new Date(),
+      created_at: new Date(),
+      end_date: new Date(),
     },
   });
 
@@ -128,24 +122,25 @@ export default function VideoModal({
     if (video) {
       form.reset({
         title: video.title,
+        // @ts-ignore
         link: video.link,
         description: video.description,
         status: video.status,
-        platform: video.platform,
+        platform: video.platform as VideoPlatform,
         type: video.type,
         deadline: video.deadline,
         priority: video.priority,
-        tags: video.tags ? video.tags?.join(",") : "",
-        createdAt:
-          typeof video.createdAt === "string"
-            ? new Date(video.createdAt)
-            : video.createdAt,
-        endDate: video.endDate ?? undefined,
+        tags: video.tags,
+        created_at:
+          typeof video.created_at === "string"
+            ? new Date(video.created_at)
+            : video.created_at,
+        end_date: video.end_date ?? undefined,
       });
     } else {
       form.reset({
         title: "",
-        link: undefined,
+        link: "",
         description: "",
         status: VideoStatus.Idle,
         platform: VideoPlatform.YouTube,
@@ -153,8 +148,8 @@ export default function VideoModal({
         deadline: new Date(),
         priority: VideoPriority.Low,
         tags: "",
-        createdAt: new Date(),
-        endDate: undefined,
+        created_at: new Date(),
+        end_date: undefined,
       });
     }
   }, [video, open]);
@@ -164,25 +159,20 @@ export default function VideoModal({
     try {
       // save the video
       if (video) {
-        const updatedValues = {
-          ...values,
-          tags: values.tags?.split(",").map((tag) => tag.trim()),
-        };
-
-        updateVideo(video.id, updatedValues);
+        updateVideo(video.id, values);
       } else {
-        const randomId = Math.random().toString(36).substr(2, 9);
-        const updatedValues = {
-          id: randomId,
-          ...values,
-          tags: values.tags?.split(",").map((tag) => tag.trim()),
-        };
+        const randomId = Math.floor(Math.random() * 36 ** 9).toString(36);
+        const updatedValues = { ...values, id: randomId };
         addVideo(updatedValues);
       }
       setOpen(false);
     } catch (error) {
       console.error("Form submission error", error);
-      toast.error("Failed to submit the form. Please try again.");
+      toast({
+        title: "Error",
+        description: "Failed to submit the form. Please try again.",
+        variant: "destructive",
+      });
     }
   }
 
@@ -491,7 +481,7 @@ export default function VideoModal({
                 <FormField
                   disabled={form.getValues("type") !== "stream"}
                   control={form.control}
-                  name="endDate"
+                  name="end_date"
                   render={({ field }) => (
                     <FormItem className="flex flex-col pt-1 font-light">
                       <FormLabel className="pb-1.5 disabled:opacity-30">
