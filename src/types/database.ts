@@ -9,6 +9,7 @@ export type IdeaRow = {
   duration: `${number}:${number}`;
   content_type: string;
   target_audience: string;
+  is_favorite: "true" | "false";
   outline?: string;
 };
 

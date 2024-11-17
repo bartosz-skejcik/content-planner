@@ -98,7 +98,7 @@ function App() {
               triggerVisible={activeTab === "videos"}
             />
           </header>
-          <div className="flex flex-1 justify-start flex-col gap-4 w-full mx-auto">
+          <div className="flex flex-1 justify-start flex-col gap-4 w-full mx-auto pb-2">
             <ActiveTabComponent />
           </div>
         </SidebarInset>

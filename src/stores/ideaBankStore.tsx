@@ -33,6 +33,7 @@ const ideaSchema = z.object({
   content_type: z.nativeEnum(VideoType),
   target_audience: z.nativeEnum(IdeaTargetAudience),
   outline: z.string().optional(),
+  is_favorite: z.boolean().default(false),
   created_at: z.date(),
   updated_at: z.date(),
 });
@@ -55,8 +56,8 @@ export const useIdeaBankStore = create<{
     if (!db) return;
 
     const query = `
-    SELECT 
-      idea_bank.*, 
+    SELECT
+      idea_bank.*,
       GROUP_CONCAT(tags.id || ':' || tags.name) AS tags
     FROM idea_bank
     LEFT JOIN idea_tags ON idea_bank.id = idea_tags.idea_id
@@ -83,6 +84,7 @@ export const useIdeaBankStore = create<{
           content_type: row.content_type,
           target_audience: row.target_audience,
           outline: row.outline ?? "",
+          is_favorite: row.is_favorite === "true",
           created_at: new Date(row.created_at),
           updated_at: row.updated_at ? new Date(row.updated_at) : undefined,
           tags,
@@ -111,8 +113,8 @@ export const useIdeaBankStore = create<{
     }
 
     const queryIdea = `
-    INSERT INTO idea_bank (id, title, description, duration, content_type, target_audience, outline, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)
+    INSERT INTO idea_bank (id, title, description, duration, content_type, target_audience, outline, is_favorite, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
   `;
     const paramsIdea = [
       validatedIdea.id,
@@ -122,6 +124,7 @@ export const useIdeaBankStore = create<{
       validatedIdea.content_type,
       validatedIdea.target_audience,
       validatedIdea.outline ?? "",
+      validatedIdea.is_favorite,
       validatedIdea.updated_at.toISOString(),
     ];
 

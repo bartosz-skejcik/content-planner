@@ -179,8 +179,9 @@ CREATE TABLE idea_bank (
     content_type TEXT NOT NULL,
     target_audience TEXT NOT NULL CHECK (target_audience IN ('beginner', 'intermediate', 'advanced')),
     outline TEXT,
+    is_favorite BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE  
+    updated_at TIMESTAMP WITH TIME ZONE
 
 );
 
