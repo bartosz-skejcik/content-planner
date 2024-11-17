@@ -29,20 +29,19 @@ function addTimeToDate(date: Date, timeToAdd: number = 1): Date {
 
 function calculateEndDate(video: Video): Date {
   if (video.type === "stream") {
-    const endDate = new Date(video.endDate!);
+    const endDate = new Date(video.end_date!);
     const endOfDay = new Date(video.deadline);
     endOfDay.setHours(23, 59, 59, 999);
     return endDate > endOfDay ? endOfDay : endDate;
   } else {
-    return video.endDate
-      ? new Date(video.endDate)
+    return video.end_date
+      ? new Date(video.end_date)
       : addTimeToDate(new Date(video.deadline));
   }
 }
 
 function transformVideosToEvents(videos: Video[]): CalendarEvent[] {
   // add one hour to the end date
-  console.log("transformVideosToEvents", videos);
   return videos.map((video) => ({
     id: video.id,
     start: new Date(video.deadline),
@@ -62,8 +61,6 @@ function ScheduleView({ videos, openModal }: Props) {
       setEvents(transformVideosToEvents(videos));
     }
   }, [videos]);
-
-  console.log("Schedule view:", events);
 
   return (
     <main className="w-full gap-4 items-center justify-center flex-col flex">

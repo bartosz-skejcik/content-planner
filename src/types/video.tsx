@@ -1,5 +1,6 @@
 import { Instagram, Twitch, Twitter } from "lucide-react";
 import { Tiktok, Youtube } from "iconoir-react/regular";
+import { Subtask } from "./subtask";
 
 export enum VideoStatus {
   Idle = "idle",
@@ -34,20 +35,22 @@ export enum VideoPlatform {
   Twitter = "twitter",
 }
 
+// Adjustments to Video and Idea Types
 export interface Video {
   id: string;
   title: string;
-  description: string;
-  link?: string;
+  description?: string;
+  link?: string | null;
   status: VideoStatus;
-  endDate?: Date;
-  platform?: VideoPlatform;
+  platform: string;
   type: VideoType;
   priority: VideoPriority;
-  tags?: string[];
+  tags?: string;
+  subtasks?: Subtask[];
   deadline: Date;
-  createdAt: Date;
-  updatedAt?: Date;
+  created_at: Date;
+  updated_at?: Date;
+  end_date?: Date | null;
 }
 
 export function getStatusColor(status: VideoStatus) {
