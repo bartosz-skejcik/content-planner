@@ -7,6 +7,7 @@ import { VideoType } from "@/types/video";
 import { generateId } from "@/helpers/idea-bank";
 import Card from "@/components/idea-bank/card";
 import { AnimatePresence, motion } from "framer-motion";
+import IdeaSearchFilter from "@/components/idea-search-filter";
 
 type Props = {
   ideas: Idea[];
@@ -80,6 +81,7 @@ function IdeaBank({ ideas, setActiveIdea }: Props) {
             created_at: new Date(),
           },
         ],
+        is_favorite: false,
         created_at: new Date(),
         updated_at: new Date(),
       };
@@ -114,16 +116,35 @@ function IdeaBank({ ideas, setActiveIdea }: Props) {
     }
   };
 
+  const toggleFavoriteIdea = async (idea: Idea) => {
+    const ideaIdx = ideas.findIndex((i) => i.id === idea.id);
+
+    if (ideaIdx === -1) return;
+
+    const updatedIdeas = [...ideas];
+
+    updatedIdeas[ideaIdx] = {
+      ...idea,
+      is_favorite: !idea.is_favorite,
+    };
+
+    setFilteredIdeas(updatedIdeas);
+
+    // Update the store
+    await updateIdea(idea.id!, { is_favorite: !idea.is_favorite });
+  };
+
   return (
-    <main className="w-full flex flex-col items-center justify-center gap-4 px-7">
+    <main className="flex flex-col items-center justify-center w-full gap-4 px-7">
       <div className="flex gap-4">
         <Button onClick={createNewTestIdea}>Create Test Idea</Button>
         <Button onClick={handleUpdateIdea} variant="secondary">
           Update Test Idea
         </Button>
       </div>
+      <IdeaSearchFilter ideas={ideas} onFilter={setFilteredIdeas} />
 
-      <div className="w-full grid gap-4">
+      <div className="grid w-full gap-4">
         <AnimatePresence>
           {filteredIdeas.map((idea) => (
             <motion.div
@@ -141,7 +162,11 @@ function IdeaBank({ ideas, setActiveIdea }: Props) {
                 height: { duration: 0.3 },
               }}
             >
-              <Card idea={idea} handleDelete={handleDeleteWithAnimation} />
+              <Card
+                idea={idea}
+                handleDelete={handleDeleteWithAnimation}
+                toggleFavorite={toggleFavoriteIdea}
+              />
             </motion.div>
           ))}
         </AnimatePresence>

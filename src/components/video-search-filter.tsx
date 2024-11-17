@@ -57,7 +57,8 @@ const VideoSearchFilter: React.FC<VideoSearchFilterProps> = ({
         priorityFilters.includes(video.priority);
       const matchesPlatformFilters =
         platformFilters.length === 0 ||
-        (video.platform && platformFilters.includes(video.platform));
+        (video.platform &&
+          platformFilters.includes(video.platform as VideoPlatform));
 
       return (
         matchesSearchTerm &&
@@ -72,14 +73,14 @@ const VideoSearchFilter: React.FC<VideoSearchFilterProps> = ({
   };
 
   return (
-    <div className="w-full pt-4 grid grid-cols-1 gap-4 mb-8">
+    <div className="grid w-full grid-cols-1 gap-4 pt-4 mb-8">
       <Input
         placeholder="Search videos..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="w-full"
       />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <MultiSelector
           values={statusFilters}
           onValuesChange={setStatusFilters as any}
@@ -101,7 +102,7 @@ const VideoSearchFilter: React.FC<VideoSearchFilterProps> = ({
                       backgroundColor: getStatusColor(status).bg,
                       borderColor: getStatusColor(status).border,
                     }}
-                    className="rounded-full w-3 h-3 border dark:border-none"
+                    className="w-3 h-3 border rounded-full dark:border-none"
                   />
                   {status.charAt(0).toUpperCase() + status.slice(1)}
                 </MultiSelectorItem>

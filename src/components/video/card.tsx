@@ -45,7 +45,8 @@ function colorByDeadlineSeverity(deadline: Date) {
 
 function VideoCard({ video, setActiveVideo, openModal }: Props) {
   // shorten the array to only three tags
-  const tags = video.tags?.slice(0, 3);
+  const parsedTags = video.tags ? video.tags.split(",") : [];
+  const tags = parsedTags.slice(0, 3);
 
   const updateVideo = useVideoStore((state) => state.updateVideo);
   const deleteVideo = useVideoStore((state) => state.deleteVideo);
@@ -68,9 +69,11 @@ function VideoCard({ video, setActiveVideo, openModal }: Props) {
                 {shortenString(video.title, 50)}
               </h4>
             </button>
-            <p className="text-sm lg:text-base text-muted-foreground/70 font-light whitespace-pre-wrap">
-              {shortenString(video.description, 100)}
-            </p>
+            {video.description && (
+              <p className="text-sm lg:text-base text-muted-foreground/70 font-light whitespace-pre-wrap">
+                {shortenString(video.description, 100)}
+              </p>
+            )}
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -160,11 +163,15 @@ function VideoCard({ video, setActiveVideo, openModal }: Props) {
           {video.tags && video.tags.length > 1 && (
             <>
               |
-              <div className="flex gap-1">
-                {video.tags.length! > 1 &&
-                  tags?.map((tag, index) => (
+              <div className="flex gap-1 flex-wrap">
+                {parsedTags.length! > 1 &&
+                  tags.map((tag, index) => (
                     <>
-                      <Badge key={index} variant="outline">
+                      <Badge
+                        key={index}
+                        variant="outline"
+                        className="whitespace-nowrap"
+                      >
                         {shortenString(tag, 15)}
                       </Badge>
                     </>
