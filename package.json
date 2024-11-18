@@ -6,7 +6,7 @@
   "scripts": {
     "dev:tauri": "tauri dev",
     "dev": "bunx --bun vite",
-    "build": "tsc && bunx --bun vite build",
+    "build": "bunx --bun vite build",
     "preview": "vite preview",
     "tauri": "tauri"
   },

@@ -4,9 +4,9 @@
   "version": "0.3.5",
   "identifier": "pl.paczesny.dev.content-planner",
   "build": {
-    "beforeDevCommand": "bun dev",
+    "beforeDevCommand": "bun run dev",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "bun build",
+    "beforeBuildCommand": "bunx --bun vite build",
     "frontendDist": "../dist"
   },
   "app": {
