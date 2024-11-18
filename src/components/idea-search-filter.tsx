@@ -2,14 +2,7 @@ import { useState, useEffect } from "react";
 import { Idea, IdeaTargetAudience } from "@/types/idea";
 import { Input } from "@/components/ui/input";
 import { useTagStore } from "@/stores/tagStore";
-import {
-  MultiSelector,
-  MultiSelectorTrigger,
-  MultiSelectorInput,
-  MultiSelectorContent,
-  MultiSelectorList,
-  MultiSelectorItem,
-} from "@/components/ui/multi-select";
+import MultiSelector from "@/components/ui/multi-select";
 import { VideoType } from "@/types/video";
 import { Button } from "@/components/ui/button";
 
@@ -88,68 +81,41 @@ const IdeaSearchFilter: React.FC<IdeaSearchFilterProps> = ({
       />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <MultiSelector
-          values={tagsFilters}
-          onValuesChange={setTagsFilters as any}
-          loop
-        >
-          <MultiSelectorTrigger>
-            <MultiSelectorInput placeholder="Select tags..." />
-          </MultiSelectorTrigger>
-          <MultiSelectorContent>
-            <MultiSelectorList>
-              {tagStore.tags.map((tag) => (
-                <MultiSelectorItem key={tag.id} value={tag.name}>
-                  {tag.name}
-                </MultiSelectorItem>
-              ))}
-            </MultiSelectorList>
-          </MultiSelectorContent>
-        </MultiSelector>
+          defaultOptions={tagStore.tags.map((tag) => ({
+            value: tag.name,
+            label: tag.name.charAt(0).toUpperCase() + tag.name.slice(1),
+          }))}
+          onChange={setTagsFilters as any}
+          placeholder="Tags"
+        />
+        <MultiSelector
+          defaultOptions={Object.values(VideoType).map((type) => ({
+            value: type,
+            label: type.charAt(0).toUpperCase() + type.slice(1),
+          }))}
+          onChange={(options) => {
+            setContentTypesFilters(options.map((option) => option.value));
+          }}
+          placeholder="Content Type"
+        />
 
         <MultiSelector
-          values={contentTypesFilters}
-          onValuesChange={setContentTypesFilters as any}
-          loop
-        >
-          <MultiSelectorTrigger>
-            <MultiSelectorInput placeholder="Select content types..." />
-          </MultiSelectorTrigger>
-          <MultiSelectorContent>
-            <MultiSelectorList>
-              {Object.values(VideoType).map((type) => (
-                <MultiSelectorItem key={type} value={type}>
-                  {type.charAt(0).toUpperCase() + type.slice(1)}
-                </MultiSelectorItem>
-              ))}
-            </MultiSelectorList>
-          </MultiSelectorContent>
-        </MultiSelector>
-
-        <MultiSelector
-          values={targetAudienceFilters}
-          onValuesChange={setTargetAudienceFilters as any}
-          loop
-        >
-          <MultiSelectorTrigger>
-            <MultiSelectorInput placeholder="Select target audience..." />
-          </MultiSelectorTrigger>
-          <MultiSelectorContent>
-            <MultiSelectorList>
-              {Object.values(IdeaTargetAudience).map((audience) => (
-                <MultiSelectorItem key={audience} value={audience}>
-                  {audience.charAt(0).toUpperCase() + audience.slice(1)}
-                </MultiSelectorItem>
-              ))}
-            </MultiSelectorList>
-          </MultiSelectorContent>
-        </MultiSelector>
+          defaultOptions={Object.values(IdeaTargetAudience).map((audience) => ({
+            value: audience,
+            label: audience.charAt(0).toUpperCase() + audience.slice(1),
+          }))}
+          onChange={(options) => {
+            setTargetAudienceFilters(options.map((option) => option.value));
+          }}
+          placeholder="Target Audience"
+        />
 
         <Button
           variant={staredIdeas ? "default" : "secondary"}
           onClick={() => setStaredIdeas(!staredIdeas)}
           className="font-normal"
         >
-          Show only stared ideas
+          Show only starred ideas
         </Button>
       </div>
     </div>

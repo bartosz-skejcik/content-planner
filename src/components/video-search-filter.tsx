@@ -7,15 +7,7 @@ import {
   VideoPlatform,
 } from "@/types/video";
 import { Input } from "@/components/ui/input";
-import { getPlatformIcon, getStatusColor } from "@/types/video";
-import {
-  MultiSelector,
-  MultiSelectorTrigger,
-  MultiSelectorInput,
-  MultiSelectorContent,
-  MultiSelectorList,
-  MultiSelectorItem,
-} from "@/components/ui/multi-select";
+import MultiSelector from "@/components/ui/multi-select";
 
 type VideoSearchFilterProps = {
   videos: Video[];
@@ -82,93 +74,51 @@ const VideoSearchFilter: React.FC<VideoSearchFilterProps> = ({
       />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <MultiSelector
-          values={statusFilters}
-          onValuesChange={setStatusFilters as any}
-          loop
-        >
-          <MultiSelectorTrigger>
-            <MultiSelectorInput placeholder="Select statuses..." />
-          </MultiSelectorTrigger>
-          <MultiSelectorContent>
-            <MultiSelectorList>
-              {Object.values(VideoStatus).map((status) => (
-                <MultiSelectorItem
-                  key={status}
-                  value={status}
-                  className="justify-start"
-                >
-                  <div
-                    style={{
-                      backgroundColor: getStatusColor(status).bg,
-                      borderColor: getStatusColor(status).border,
-                    }}
-                    className="w-3 h-3 border rounded-full dark:border-none"
-                  />
-                  {status.charAt(0).toUpperCase() + status.slice(1)}
-                </MultiSelectorItem>
-              ))}
-            </MultiSelectorList>
-          </MultiSelectorContent>
-        </MultiSelector>
+          // @ts-ignore
+          defaultOptions={Object.values(VideoStatus).map((status) => ({
+            value: status,
+            label: status.charAt(0).toUpperCase() + status.slice(1),
+          }))}
+          onChange={(options) => {
+            setStatusFilters(
+              options.map((option) => option.value as VideoStatus),
+            );
+          }}
+        />
+
         <MultiSelector
-          values={typeFilters}
-          onValuesChange={setTypeFilters as any}
-          loop
-        >
-          <MultiSelectorTrigger>
-            <MultiSelectorInput placeholder="Select types..." />
-          </MultiSelectorTrigger>
-          <MultiSelectorContent>
-            <MultiSelectorList>
-              {Object.values(VideoType).map((type) => (
-                <MultiSelectorItem key={type} value={type}>
-                  {type.charAt(0).toUpperCase() + type.slice(1)}
-                </MultiSelectorItem>
-              ))}
-            </MultiSelectorList>
-          </MultiSelectorContent>
-        </MultiSelector>
+          defaultOptions={Object.values(VideoType).map((type) => ({
+            value: type,
+            label: type.charAt(0).toUpperCase() + type.slice(1),
+          }))}
+          onChange={(options) => {
+            setTypeFilters(options.map((option) => option.value as VideoType));
+          }}
+        />
+
         <MultiSelector
-          values={priorityFilters}
-          onValuesChange={setPriorityFilters as any}
-          loop
-        >
-          <MultiSelectorTrigger>
-            <MultiSelectorInput placeholder="Select priorities..." />
-          </MultiSelectorTrigger>
-          <MultiSelectorContent>
-            <MultiSelectorList>
-              {Object.values(VideoPriority).map((priority) => (
-                <MultiSelectorItem key={priority} value={priority}>
-                  {priority.charAt(0).toUpperCase() + priority.slice(1)}
-                </MultiSelectorItem>
-              ))}
-            </MultiSelectorList>
-          </MultiSelectorContent>
-        </MultiSelector>
+          defaultOptions={Object.values(VideoPriority).map((priority) => ({
+            value: priority,
+            label: priority.charAt(0).toUpperCase() + priority.slice(1),
+          }))}
+          onChange={(options) => {
+            setPriorityFilters(
+              options.map((option) => option.value as VideoPriority),
+            );
+          }}
+        />
+
         <MultiSelector
-          values={platformFilters}
-          onValuesChange={setPlatformFilters as any}
-          loop
-        >
-          <MultiSelectorTrigger>
-            <MultiSelectorInput placeholder="Select platforms..." />
-          </MultiSelectorTrigger>
-          <MultiSelectorContent>
-            <MultiSelectorList>
-              {Object.values(VideoPlatform).map((platform) => (
-                <MultiSelectorItem
-                  key={platform}
-                  value={platform}
-                  className="justify-start text-md"
-                >
-                  {getPlatformIcon(platform as VideoPlatform)}
-                  {platform.charAt(0).toUpperCase() + platform.slice(1)}
-                </MultiSelectorItem>
-              ))}
-            </MultiSelectorList>
-          </MultiSelectorContent>
-        </MultiSelector>
+          defaultOptions={Object.values(VideoPlatform).map((platform) => ({
+            value: platform,
+            label: platform.charAt(0).toUpperCase() + platform.slice(1),
+          }))}
+          onChange={(options) => {
+            setPlatformFilters(
+              options.map((option) => option.value as VideoPlatform),
+            );
+          }}
+        />
       </div>
     </div>
   );

@@ -15,9 +15,17 @@ type Props = {
   idea: Idea;
   handleDelete: (id: string) => Promise<void>;
   toggleFavorite: (idea: Idea) => Promise<void>;
+  setActiveIdea: (idea: Idea) => void;
+  openModal: (isOpen: boolean) => void;
 };
 
-function Card({ idea, handleDelete, toggleFavorite }: Props) {
+function Card({
+  idea,
+  handleDelete,
+  toggleFavorite,
+  setActiveIdea,
+  openModal,
+}: Props) {
   return (
     <div className="transition-shadow border rounded-lg hover:shadow-md">
       {/* Main Content Area */}
@@ -79,13 +87,22 @@ function Card({ idea, handleDelete, toggleFavorite }: Props) {
 
           {/* Actions */}
           <div className="flex gap-2">
-            <Button variant="secondary" size="icon">
+            <Button
+              variant="secondary"
+              size="icon"
+              onClick={() => {
+                setActiveIdea(idea);
+                openModal(true);
+              }}
+              className="hover:text-primary"
+            >
               <Edit2 className="w-4 h-4" />
             </Button>
             <Button
               onClick={() => handleDelete(idea.id!)}
               variant="secondary"
               size="icon"
+              className="hover:text-red-500"
             >
               <Trash2 className="w-4 h-4" />
             </Button>
