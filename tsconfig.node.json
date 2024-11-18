@@ -6,6 +6,8 @@
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
 
+    "types": ["bun-types"],
+
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
