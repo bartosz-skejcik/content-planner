@@ -84,6 +84,7 @@ const VideoSearchFilter: React.FC<VideoSearchFilterProps> = ({
               options.map((option) => option.value as VideoStatus),
             );
           }}
+          placeholder="Enter status"
         />
 
         <MultiSelector
@@ -94,6 +95,7 @@ const VideoSearchFilter: React.FC<VideoSearchFilterProps> = ({
           onChange={(options) => {
             setTypeFilters(options.map((option) => option.value as VideoType));
           }}
+          placeholder="Enter type"
         />
 
         <MultiSelector
@@ -106,6 +108,7 @@ const VideoSearchFilter: React.FC<VideoSearchFilterProps> = ({
               options.map((option) => option.value as VideoPriority),
             );
           }}
+          placeholder="Enter priority"
         />
 
         <MultiSelector
@@ -118,6 +121,7 @@ const VideoSearchFilter: React.FC<VideoSearchFilterProps> = ({
               options.map((option) => option.value as VideoPlatform),
             );
           }}
+          placeholder="Enter platform"
         />
       </div>
     </div>
