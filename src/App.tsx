@@ -19,6 +19,7 @@ import ScheduleView from "./views/schedule";
 import IdeaBank from "./views/idea-bank";
 import { useIdeaBankStore } from "./stores/ideaBankStore";
 import { Idea } from "./types/idea";
+import IdeaBankModal from "./components/idea-modal";
 
 export type ActiveTab =
   | "videos"
@@ -34,7 +35,9 @@ function App() {
 
   const [activeTab, setActiveTab] = useState<ActiveTab>("ideas");
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isIdeaModalOpen, setIsIdeaModalOpen] = useState(false);
 
   const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null);
 
@@ -55,7 +58,13 @@ function App() {
           />
         );
       case "ideas":
-        return <IdeaBank ideas={ideas} setActiveIdea={setSelectedIdea} />;
+        return (
+          <IdeaBank
+            ideas={ideas}
+            openModal={setIsIdeaModalOpen}
+            setActiveIdea={setSelectedIdea}
+          />
+        );
       case "settings":
         return <div>Coming soon...</div>;
       case "schedule":
@@ -96,6 +105,13 @@ function App() {
               setOpen={setIsModalOpen}
               resetSelectedVideo={() => setSelectedVideo(null)}
               triggerVisible={activeTab === "videos"}
+            />
+            <IdeaBankModal
+              idea={selectedIdea}
+              open={isIdeaModalOpen}
+              setOpen={setIsIdeaModalOpen}
+              resetSelectedIdea={() => setSelectedIdea(null)}
+              triggerVisible={activeTab === "ideas"}
             />
           </header>
           <div className="flex flex-1 justify-start flex-col gap-4 w-full mx-auto pb-2">

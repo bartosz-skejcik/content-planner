@@ -57,7 +57,7 @@ export const calculateDashboardStats = (videos: Video[]): DashboardStats => {
   // Calculate average days per video for completed videos
   const avgDaysPerVideo =
     completedVideos.reduce((acc, video) => {
-      const start = new Date(video.createdAt);
+      const start = new Date(video.created_at);
       const end = new Date(video.deadline);
       const days = Math.ceil(
         (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24),
@@ -80,7 +80,7 @@ export const calculateDashboardStats = (videos: Video[]): DashboardStats => {
   >();
 
   videos.forEach((video) => {
-    const month = getMonthAbbrev(video.createdAt);
+    const month = getMonthAbbrev(video.created_at);
     const stats = monthlyStats.get(month) || {
       completed: 0,
       inProgress: 0,
@@ -98,7 +98,7 @@ export const calculateDashboardStats = (videos: Video[]): DashboardStats => {
   const timelineStats = new Map<string, number>();
 
   completedVideos.forEach((video) => {
-    const monthYear = getMonthYear(video.updatedAt!);
+    const monthYear = getMonthYear(video.updated_at!);
     timelineStats.set(monthYear, (timelineStats.get(monthYear) || 0) + 1);
   });
 
@@ -119,7 +119,7 @@ export const calculateDashboardStats = (videos: Video[]): DashboardStats => {
                   (new Date().getTime() -
                     new Date(
                       Math.min(
-                        ...videos.map((v) => new Date(v.createdAt).getTime()),
+                        ...videos.map((v) => new Date(v.created_at).getTime()),
                       ),
                     ).getTime()) /
                     (1000 * 60 * 60 * 24 * 30),
@@ -165,10 +165,10 @@ export const calculateTrends = (videos: Video[]) => {
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
   const recentVideos = videos.filter(
-    (v) => new Date(v.createdAt) >= thirtyDaysAgo,
+    (v) => new Date(v.created_at) >= thirtyDaysAgo,
   );
   const previousVideos = videos.filter(
-    (v) => new Date(v.createdAt) < thirtyDaysAgo,
+    (v) => new Date(v.created_at) < thirtyDaysAgo,
   );
 
   const recentCompletionRate =
@@ -189,7 +189,7 @@ export const calculateTrends = (videos: Video[]) => {
       Math.ceil(
         (now.getTime() -
           new Date(
-            Math.min(...videos.map((v) => new Date(v.createdAt).getTime())),
+            Math.min(...videos.map((v) => new Date(v.created_at).getTime())),
           ).getTime()) /
           (1000 * 60 * 60 * 24),
       ),

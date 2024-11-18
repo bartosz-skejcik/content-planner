@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
-import { Idea, IdeaTargetAudience } from "@/types/idea";
+import { Idea } from "@/types/idea";
 import { useIdeaBankStore } from "@/stores/ideaBankStore";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { VideoType } from "@/types/video";
-import { generateId } from "@/helpers/idea-bank";
 import Card from "@/components/idea-bank/card";
 import { AnimatePresence, motion } from "framer-motion";
 import IdeaSearchFilter from "@/components/idea-search-filter";
@@ -12,91 +8,17 @@ import IdeaSearchFilter from "@/components/idea-search-filter";
 type Props = {
   ideas: Idea[];
   setActiveIdea: (idea: Idea) => void;
+  openModal: (isOpen: boolean) => void;
 };
 
-function IdeaBank({ ideas, setActiveIdea }: Props) {
+function IdeaBank({ ideas, setActiveIdea, openModal }: Props) {
   const [filteredIdeas, setFilteredIdeas] = useState(ideas);
-  const { toast } = useToast();
-  const addIdea = useIdeaBankStore((state) => state.addIdea);
   const updateIdea = useIdeaBankStore((state) => state.updateIdea);
   const handleDelete = useIdeaBankStore((state) => state.deleteIdea);
 
   useEffect(() => {
     setFilteredIdeas(ideas);
   }, [ideas]);
-
-  async function handleUpdateIdea() {
-    try {
-      await updateIdea(ideas[0].id!, {
-        title: "Updated Test Idea",
-        description: "This is an updated test idea",
-        tags: [
-          {
-            id: "1",
-            name: "Test Tag",
-            created_at: new Date(),
-          },
-          {
-            id: "2",
-            name: "Updated Test Tag",
-            created_at: new Date(),
-          },
-        ],
-      });
-    } catch (e: any) {
-      if (e.message && e.message === "Required") {
-        e.message = `Expected: ${e.expected} but received: ${e.received} for ${e.path}`;
-      }
-      toast({
-        title: "Error",
-        description: e.message ?? e,
-        variant: "destructive",
-      });
-    }
-  }
-
-  async function createNewTestIdea() {
-    try {
-      const idea: Idea = {
-        title: "React Context vs Redux Comparison",
-        target_audience: IdeaTargetAudience.ADVANCED,
-        duration: "10:15",
-        content_type: VideoType.Tutorial,
-        outline:
-          "Understanding Context API Redux Overview Performance Comparisons When to Use Each",
-        tags: [
-          {
-            id: generateId(),
-            name: "react",
-            created_at: new Date(),
-          },
-          {
-            id: generateId(),
-            name: "redux",
-            created_at: new Date(),
-          },
-          {
-            id: generateId(),
-            name: "context-api",
-            created_at: new Date(),
-          },
-        ],
-        is_favorite: false,
-        created_at: new Date(),
-        updated_at: new Date(),
-      };
-      await addIdea(idea);
-    } catch (e: any) {
-      if (e.message === "Required") {
-        e.message = `Expected: ${e.expected} but received: ${e.received} for ${e.path}`;
-      }
-      toast({
-        title: "Error",
-        description: e.message,
-        variant: "destructive",
-      });
-    }
-  }
 
   const handleDeleteWithAnimation = async (id: string) => {
     try {
@@ -136,12 +58,6 @@ function IdeaBank({ ideas, setActiveIdea }: Props) {
 
   return (
     <main className="flex flex-col items-center justify-center w-full gap-4 px-7">
-      <div className="flex gap-4">
-        <Button onClick={createNewTestIdea}>Create Test Idea</Button>
-        <Button onClick={handleUpdateIdea} variant="secondary">
-          Update Test Idea
-        </Button>
-      </div>
       <IdeaSearchFilter ideas={ideas} onFilter={setFilteredIdeas} />
 
       <div className="grid w-full gap-4">
@@ -166,6 +82,8 @@ function IdeaBank({ ideas, setActiveIdea }: Props) {
                 idea={idea}
                 handleDelete={handleDeleteWithAnimation}
                 toggleFavorite={toggleFavoriteIdea}
+                setActiveIdea={setActiveIdea}
+                openModal={openModal}
               />
             </motion.div>
           ))}
