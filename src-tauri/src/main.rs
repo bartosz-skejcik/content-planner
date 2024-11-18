@@ -5,6 +5,7 @@ use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::env;
+use tauri_plugin_sql::{Builder, Migration, MigrationKind};
 
 // Define the structure for the video attributes
 #[derive(Serialize, Deserialize, Debug)]
@@ -128,8 +129,89 @@ async fn get_groq_chat_completion(props: &Props) -> Result<String, String> {
 }
 
 fn main() {
+    let sql_query = "
+DROP TABLE IF EXISTS videos;
+DROP TABLE IF EXISTS subtasks;
+DROP TABLE IF EXISTS tags;
+DROP TABLE IF EXISTS idea_bank;
+DROP TABLE IF EXISTS idea_tags;
+DROP TABLE IF EXISTS settings;
+
+
+-- Table: videos
+CREATE TABLE videos (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    link TEXT,
+    status TEXT NOT NULL CHECK (status IN ('idle', 'scripted', 'recorded', 'edited', 'thumbnail', 'created', 'published')),
+    platform TEXT CHECK (platform IN ('youtube', 'tiktok', 'instagram', 'twitch', 'twitter')),
+    type TEXT NOT NULL CHECK (type IN ('tutorial', 'vlog', 'review', 'talking', 'stream', 'other')),
+    priority TEXT NOT NULL CHECK (priority IN ('low', 'medium', 'high')),
+    tags TEXT,
+    deadline DATE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE,
+    end_date DATE
+);
+
+CREATE TABLE subtasks (
+    id TEXT PRIMARY KEY,
+    video_id TEXT NOT NULL,
+    title TEXT NOT NULL,
+    status TEXT NOT NULL CHECK (status IN ('Pending', 'In Progress', 'Completed')),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE,
+    FOREIGN KEY (video_id) REFERENCES videos (id) ON DELETE CASCADE
+);
+
+CREATE TABLE tags (
+    id TEXT PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE idea_bank (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    duration TEXT NOT NULL,
+    content_type TEXT NOT NULL,
+    target_audience TEXT NOT NULL CHECK (target_audience IN ('beginner', 'intermediate', 'advanced')),
+    outline TEXT,
+    is_favorite BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE
+
+);
+
+CREATE TABLE idea_tags (
+    idea_id TEXT NOT NULL,
+    tag_id TEXT NOT NULL,
+    PRIMARY KEY (idea_id, tag_id),
+    FOREIGN KEY (idea_id) REFERENCES idea_bank (id) ON DELETE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE
+);
+
+CREATE TABLE settings (
+    key TEXT PRIMARY KEY,
+    value TEXT
+);
+    ";
+
+    let migrations = vec![Migration {
+        version: 3,
+        description: "initialize the database tables",
+        sql: sql_query,
+        kind: MigrationKind::Up,
+    }];
+
     tauri::Builder::default()
-        .plugin(tauri_plugin_store::Builder::default().build())
+        .plugin(
+            Builder::default()
+                .add_migrations("sqlite:content-manager.db", migrations)
+                .build(),
+        )
         .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![generate_ai_response])
         .run(tauri::generate_context!())

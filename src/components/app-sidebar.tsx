@@ -1,4 +1,9 @@
-import { Calendar, GalleryVerticalEnd } from "lucide-react";
+import {
+  Calendar,
+  GalleryVerticalEnd,
+  Lightbulb,
+  Settings,
+} from "lucide-react";
 import {
   Home,
   //Link,
@@ -22,8 +27,10 @@ import { ActiveTab } from "@/App";
 const data = {
   nav: [
     { name: "Dashboard", icon: Home, componentId: "dashboard" },
+    { name: "Idea Bank", icon: Lightbulb, componentId: "ideas" },
     { name: "Videos", icon: Menu, componentId: "videos" },
     { name: "Schedule", icon: Calendar, componentId: "schedule" },
+    { name: "Settings", icon: Settings, componentId: "settings" },
     //{ name: "Connected accounts", icon: Link, componentId: "accounts" },
   ],
 };

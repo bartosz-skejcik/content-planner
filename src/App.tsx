@@ -14,27 +14,77 @@ import DashboardView from "@/views/dashboard";
 import { useVideoStore } from "@/stores/videoStore"; // Import the Zustand store
 import VideoModal from "@/components/video-modal";
 import { Video } from "@/types/video";
-import { Toaster } from "sonner";
+import { Toaster } from "./components/ui/toaster";
 import ScheduleView from "./views/schedule";
+import IdeaBank from "./views/idea-bank";
+import { useIdeaBankStore } from "./stores/ideaBankStore";
+import { Idea } from "./types/idea";
+import IdeaBankModal from "./components/idea-modal";
 
-export type ActiveTab = "videos" | "dashboard" | "schedule";
+export type ActiveTab =
+  | "videos"
+  | "dashboard"
+  | "schedule"
+  | "ideas"
+  | "settings";
 
 function App() {
   // Use the Zustand store to access the videos
   const videos = useVideoStore((state) => state.videos);
+  const ideas = useIdeaBankStore((state) => state.ideas);
 
-  const [activeTab, setActiveTab] = useState<ActiveTab>("videos");
+  const [activeTab, setActiveTab] = useState<ActiveTab>("ideas");
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isIdeaModalOpen, setIsIdeaModalOpen] = useState(false);
+
+  const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null);
 
   useEffect(() => {
     // Load the videos from the store
     useVideoStore.getState().loadVideos();
+    useIdeaBankStore.getState().loadIdeas();
   }, []);
+
+  const ActiveTabComponent = () => {
+    switch (activeTab) {
+      case "videos":
+        return (
+          <VideosView
+            videos={videos}
+            setActiveVideo={setSelectedVideo}
+            openModal={setIsModalOpen}
+          />
+        );
+      case "ideas":
+        return (
+          <IdeaBank
+            ideas={ideas}
+            openModal={setIsIdeaModalOpen}
+            setActiveIdea={setSelectedIdea}
+          />
+        );
+      case "settings":
+        return <div>Coming soon...</div>;
+      case "schedule":
+        return (
+          <ScheduleView
+            openModal={() => {
+              setSelectedVideo(null);
+              setIsModalOpen(true);
+            }}
+            videos={videos}
+          />
+        );
+      default:
+        return <DashboardView videos={videos} />;
+    }
+  };
 
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-      <Toaster theme="dark" />
+      <Toaster />
       <SidebarProvider
         style={
           {
@@ -56,25 +106,16 @@ function App() {
               resetSelectedVideo={() => setSelectedVideo(null)}
               triggerVisible={activeTab === "videos"}
             />
+            <IdeaBankModal
+              idea={selectedIdea}
+              open={isIdeaModalOpen}
+              setOpen={setIsIdeaModalOpen}
+              resetSelectedIdea={() => setSelectedIdea(null)}
+              triggerVisible={activeTab === "ideas"}
+            />
           </header>
-          <div className="flex flex-1 justify-start flex-col gap-4 w-full mx-auto">
-            {activeTab === "videos" ? (
-              <VideosView
-                videos={videos}
-                setActiveVideo={setSelectedVideo}
-                openModal={setIsModalOpen}
-              />
-            ) : activeTab === "dashboard" ? (
-              <DashboardView videos={videos} />
-            ) : (
-              <ScheduleView
-                openModal={() => {
-                  setSelectedVideo(null);
-                  setIsModalOpen(true);
-                }}
-                videos={videos}
-              />
-            )}
+          <div className="flex flex-1 justify-start flex-col gap-4 w-full mx-auto pb-2">
+            <ActiveTabComponent />
           </div>
         </SidebarInset>
       </SidebarProvider>
