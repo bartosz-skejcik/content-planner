@@ -1,7 +1,7 @@
 [package]
 name = "content-planner"
-version = "0.3.0"
-description = "A Tauri App"
+version = "0.3.4"
+description = "A tool designer to make content planning and management easier."
 authors = ["you"]
 edition = "2021"
 

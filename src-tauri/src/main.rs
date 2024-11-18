@@ -209,7 +209,7 @@ CREATE TABLE settings (
     tauri::Builder::default()
         .plugin(
             Builder::default()
-                .add_migrations("sqlite:content-manager.db", migrations)
+                .add_migrations("sqlite:content-planner.db", migrations)
                 .build(),
         )
         .plugin(tauri_plugin_shell::init())
