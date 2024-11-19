@@ -22,10 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  //Calendar as CalendarIcon,
-  WandSparkles,
-} from "lucide-react";
+import { WandSparkles } from "lucide-react";
 import {
   ResponsiveModal,
   ResponsiveModalContent,
@@ -34,28 +31,22 @@ import {
   ResponsiveModalTitle,
   ResponsiveModalTrigger,
 } from "@/components/ui/modal";
-import {
-  Video,
-  VideoStatus,
-  VideoType,
-  VideoPriority,
-  VideoPlatform,
-  getPlatformIcon,
-} from "@/types/video";
+import { Video, VideoPlatform, getPlatformIcon } from "@/types/video";
 import { useVideoStore } from "@/stores/videoStore";
 import { invoke } from "@tauri-apps/api/core";
 import { Badge } from "./ui/badge";
 import { DateTimePicker } from "./ui/datetime";
+import { useSettingsStore } from "@/stores/settingsStore";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   link: z.string().url("Invalid URL").optional(),
   description: z.string(),
-  status: z.nativeEnum(VideoStatus),
+  status: z.string(),
   platform: z.nativeEnum(VideoPlatform),
-  type: z.nativeEnum(VideoType),
+  type: z.string(),
   deadline: z.date(),
-  priority: z.nativeEnum(VideoPriority),
+  priority: z.string(),
   tags: z.string().optional(),
   created_at: z.date(),
   end_date: z.date().optional(),
@@ -77,16 +68,37 @@ export default function VideoModal({
   triggerVisible,
 }: Props) {
   const { toast } = useToast();
+
+  const types = useSettingsStore((state) => state.settings["type"]) || {
+    items: [],
+  };
+  const VideoType =
+    types.items.length > 0 ? (types.items.map((type) => type.value) ?? []) : [];
+
+  const statuses = useSettingsStore((state) => state.settings["status"]) || {
+    items: [],
+  };
+  const VideoStatus = statuses.items.map((status) => status.value) ?? [];
+
+  const priorities = useSettingsStore(
+    (state) => state.settings["priority"],
+  ) || {
+    items: [],
+  };
+  const VideoPriority =
+    priorities.items.map((priority) => priority.value) ?? [];
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      link: "",
-      description: "",
-      status: VideoStatus.Idle,
-      type: VideoType.Tutorial,
+      link: undefined as string | undefined,
+      description: undefined as string | undefined,
+      status: "idle",
+      type: undefined as string | undefined,
+      platform: VideoPlatform.YouTube,
       deadline: new Date(),
-      priority: VideoPriority.Medium,
+      priority: undefined as string | undefined,
       tags: "",
       created_at: new Date(),
       end_date: new Date(),
@@ -141,11 +153,11 @@ export default function VideoModal({
         title: "",
         link: "",
         description: "",
-        status: VideoStatus.Idle,
+        status: undefined,
         platform: VideoPlatform.YouTube,
-        type: VideoType.Tutorial,
+        type: "idle",
         deadline: new Date(),
-        priority: VideoPriority.Low,
+        priority: undefined,
         tags: "",
         created_at: new Date(),
         end_date: undefined,
@@ -158,10 +170,10 @@ export default function VideoModal({
     try {
       // save the video
       if (video) {
-        updateVideo(video.id, values);
+        updateVideo(video.id, values as Partial<Video>);
       } else {
         const randomId = Math.floor(Math.random() * 36 ** 9).toString(36);
-        const updatedValues = { ...values, id: randomId };
+        const updatedValues = { ...values, id: randomId } as Video;
         addVideo(updatedValues);
       }
       setOpen(false);

@@ -20,6 +20,8 @@ import IdeaBank from "./views/idea-bank";
 import { useIdeaBankStore } from "./stores/ideaBankStore";
 import { Idea } from "./types/idea";
 import IdeaBankModal from "./components/idea-modal";
+import { useSettingsStore } from "./stores/settingsStore";
+import SettingsView from "./views/settings";
 
 export type ActiveTab =
   | "videos"
@@ -32,8 +34,10 @@ function App() {
   // Use the Zustand store to access the videos
   const videos = useVideoStore((state) => state.videos);
   const ideas = useIdeaBankStore((state) => state.ideas);
+  const settingsStore = useSettingsStore((state) => state);
+  const settings = settingsStore.settings;
 
-  const [activeTab, setActiveTab] = useState<ActiveTab>("ideas");
+  const [activeTab, setActiveTab] = useState<ActiveTab>("settings");
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,6 +49,9 @@ function App() {
     // Load the videos from the store
     useVideoStore.getState().loadVideos();
     useIdeaBankStore.getState().loadIdeas();
+
+    settingsStore.initializeSettings();
+    settingsStore.loadSetings();
   }, []);
 
   const ActiveTabComponent = () => {
@@ -66,7 +73,7 @@ function App() {
           />
         );
       case "settings":
-        return <div>Coming soon...</div>;
+        return <SettingsView settings={settings} />;
       case "schedule":
         return (
           <ScheduleView
