@@ -3,8 +3,8 @@ import { Idea, IdeaTargetAudience } from "@/types/idea";
 import { Input } from "@/components/ui/input";
 import { useTagStore } from "@/stores/tagStore";
 import MultiSelector from "@/components/ui/multi-select";
-import { VideoType } from "@/types/video";
 import { Button } from "@/components/ui/button";
+import { useSettingsStore } from "@/stores/settingsStore";
 
 type IdeaSearchFilterProps = {
   ideas: Idea[];
@@ -22,6 +22,9 @@ const IdeaSearchFilter: React.FC<IdeaSearchFilterProps> = ({
     [],
   );
   const [staredIdeas, setStaredIdeas] = useState<boolean>(false);
+
+  const types = useSettingsStore((state) => state.settings["type"]);
+  const VideoType = types.items.map((type) => type.value) ?? [];
 
   const tagStore = useTagStore();
 
