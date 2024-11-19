@@ -118,9 +118,10 @@ This application is built using Tauri and Bun, ensuring a lightweight and fast e
 | **Stage 1** | **Foundational Improvements:**                                                                      | **2-3 weeks**  | `in-progress` |
 |             | - [x] Refactor store for performance.                                                               |                | `done`        |
 |             | - [x] Implement **Idea Bank** (basic functionality):                                                |                | `done`        |
+|             | - [x] Implement video type, status, priority & target audience settings.                            |                | `done`        |
+|             | - [ ] Implement idea to video plan conversion.                                                      |                | `in-progress` |
 |             | - [ ] Schema, search, tagging, and integration with video entries.                                  |                | `in-progress` |
 |             | - [ ] Add subtasks to Task Tracker.                                                                 |                | `in-progress` |
-|             | - [ ] Drag-and-drop in the calendar (for deadlines and tasks).                                      |                | `backlog`     |
 | **Stage 2** | **Core Feature Enhancements:**                                                                      | **4-5 weeks**  | `backlog`     |
 |             | - [ ] AI-powered script and thumbnail suggestions.                                                  |                | `backlog`     |
 |             | - [ ] Deadline notifications (integrated with calendar and tasks).                                  |                | `backlog`     |
