@@ -30,13 +30,13 @@ import {
   ResponsiveModalTitle,
   ResponsiveModalTrigger,
 } from "@/components/ui/modal";
-import { VideoType } from "@/types/video";
-import { Idea, IdeaTargetAudience } from "@/types/idea";
+import { Idea } from "@/types/idea";
 import { useIdeaBankStore } from "@/stores/ideaBankStore";
 import { Tag } from "@/types/tags";
 import MultiSelector from "./ui/multi-select";
 import { useTagStore } from "@/stores/tagStore";
 import { generateId } from "@/helpers/idea-bank";
+import { useSettingsStore } from "@/stores/settingsStore";
 
 const ideaSchema = z.object({
   id: z.string(),
@@ -50,9 +50,9 @@ const ideaSchema = z.object({
       message: "Duration is required",
     })
     .regex(/^\d+:\d+$/),
-  content_type: z.nativeEnum(VideoType),
-  target_audience: z.nativeEnum(IdeaTargetAudience),
-  outline: z.string().optional(),
+  content_type: z.string(),
+  target_audience: z.string(),
+  outline: z.string().nullable().optional(),
   is_favorite: z.boolean().default(false),
   created_at: z.date(),
   updated_at: z.date(),
@@ -81,6 +81,19 @@ export default function IdeaBankModal({
   const { toast } = useToast();
   // @ts-expect-error Yet to implement loading state
   const [loading, setLoading] = useState(false);
+
+  const types = useSettingsStore((state) => state.settings["type"]) || {
+    items: [],
+  };
+  const targetAudience = useSettingsStore(
+    (state) => state.settings["target audience"],
+  ) || {
+    items: [],
+  };
+  const videoTypes = types.items.map((type) => type.value) ?? [];
+  const videoTargetAudience =
+    targetAudience.items.map((audience) => audience.value) ?? [];
+
   const form = useForm({
     resolver: zodResolver(ideaSchema),
     defaultValues: {
@@ -89,8 +102,8 @@ export default function IdeaBankModal({
       description: null as string | null,
       tags: [] as string[],
       duration: null as string | null,
-      content_type: VideoType.Talking, // Default content type
-      target_audience: IdeaTargetAudience.BEGINNER,
+      content_type: "idle", // Default content type
+      target_audience: null as string | null,
       outline: null as string | null,
       is_favorite: false,
       created_at: new Date(),
@@ -121,8 +134,8 @@ export default function IdeaBankModal({
         description: "",
         tags: [],
         duration: null,
-        content_type: VideoType.Talking,
-        target_audience: IdeaTargetAudience.BEGINNER,
+        content_type: "idle",
+        target_audience: "",
         outline: null,
         is_favorite: false,
         created_at: new Date(),
@@ -296,7 +309,7 @@ export default function IdeaBankModal({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {Object.values(VideoType).map((type) => (
+                        {Object.values(videoTypes).map((type) => (
                           <SelectItem key={type} value={type}>
                             {type.charAt(0).toUpperCase() + type.slice(1)}
                           </SelectItem>
@@ -317,6 +330,7 @@ export default function IdeaBankModal({
                     <FormLabel>Target Audience</FormLabel>
                     <Select
                       onValueChange={field.onChange}
+                      // @ts-ignore
                       defaultValue={field.value}
                     >
                       <FormControl>
@@ -325,7 +339,7 @@ export default function IdeaBankModal({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {Object.values(IdeaTargetAudience).map((audience) => (
+                        {Object.values(videoTargetAudience).map((audience) => (
                           <SelectItem key={audience} value={audience}>
                             {audience.charAt(0).toUpperCase() +
                               audience.slice(1)}

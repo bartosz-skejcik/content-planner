@@ -7,7 +7,6 @@ import {
   getStatusColor,
   Video,
   VideoPlatform,
-  VideoStatus,
 } from "@/types/video";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useVideoStore } from "@/stores/videoStore";
+import { useSettingsStore } from "@/stores/settingsStore";
 
 type Props = {
   video: Video;
@@ -50,6 +50,9 @@ function VideoCard({ video, setActiveVideo, openModal }: Props) {
 
   const updateVideo = useVideoStore((state) => state.updateVideo);
   const deleteVideo = useVideoStore((state) => state.deleteVideo);
+
+  const statuses = useSettingsStore((state) => state.settings["status"]);
+  const videoStatuses = statuses.items.map((status) => status.value) ?? [];
 
   return (
     <UiCard className="w-full">
@@ -124,7 +127,7 @@ function VideoCard({ video, setActiveVideo, openModal }: Props) {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              {Object.values(VideoStatus).map((status) => (
+              {Object.values(videoStatuses).map((status) => (
                 <DropdownMenuItem
                   key={status}
                   onClick={() => {

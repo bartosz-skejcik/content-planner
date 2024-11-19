@@ -1,10 +1,9 @@
 import { create } from "zustand";
 import { z } from "zod";
-import { Idea, IdeaTargetAudience } from "@/types/idea";
+import { Idea } from "@/types/idea";
 import { Tag } from "@/types/tags";
 import { IdeaRow, TagRow } from "@/types/database";
 import { initializeStore } from "./database";
-import { VideoType } from "@/types/video";
 import { updateIdea } from "@/helpers/idea-bank";
 
 // Zod schema for validation
@@ -30,8 +29,8 @@ const ideaSchema = z.object({
       message: "Duration is required",
     })
     .regex(/^\d+:\d+$/),
-  content_type: z.nativeEnum(VideoType),
-  target_audience: z.nativeEnum(IdeaTargetAudience),
+  content_type: z.string(),
+  target_audience: z.string(),
   outline: z.string().optional(),
   is_favorite: z.boolean().default(false),
   created_at: z.date(),

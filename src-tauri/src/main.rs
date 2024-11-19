@@ -197,14 +197,44 @@ CREATE TABLE settings (
     key TEXT PRIMARY KEY,
     value TEXT
 );
-    ";
+";
 
-    let migrations = vec![Migration {
-        version: 3,
-        description: "initialize the database tables",
-        sql: sql_query,
-        kind: MigrationKind::Up,
-    }];
+    let sql_create_settings = "
+DROP TABLE IF EXISTS settings;
+
+CREATE TABLE settings (
+    id TEXT PRIMARY KEY,
+    category TEXT NOT NULL,
+    title TEXT NOT NULL,
+    value TEXT UNIQUE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+";
+
+    let sql_update_settings = "
+ALTER TABLE settings DROP COLUMN title;
+";
+
+    let migrations = vec![
+        Migration {
+            version: 3,
+            description: "initialize the database tables",
+            sql: sql_query,
+            kind: MigrationKind::Up,
+        },
+        Migration {
+            version: 4,
+            description: "initialize the settings table",
+            sql: sql_create_settings,
+            kind: MigrationKind::Up,
+        },
+        Migration {
+            version: 5,
+            description: "update the settings table",
+            sql: sql_update_settings,
+            kind: MigrationKind::Up,
+        },
+    ];
 
     tauri::Builder::default()
         .plugin(

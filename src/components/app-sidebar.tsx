@@ -53,7 +53,7 @@ export function AppSidebar({ onNavigate, currentTab, ...props }: Props) {
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold">YT Video Planner</span>
-                  <span className="opacity-60">v0.2.0</span>
+                  <span className="opacity-60">v0.4.0</span>
                 </div>
               </a>
             </SidebarMenuButton>

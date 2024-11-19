@@ -1,23 +1,17 @@
-import { Video, VideoStatus } from "@/types/video";
+import { Video } from "@/types/video";
 
 // Helper function to check if a video is completed
-const isVideoCompleted = (status: VideoStatus) =>
-  status === VideoStatus.Published;
+const isVideoCompleted = (status: string) => status === "published";
 
 // Helper function to check if a video is in progress
-const isVideoInProgress = (status: VideoStatus) =>
-  [
-    VideoStatus.Scripted,
-    VideoStatus.Recorded,
-    VideoStatus.Edited,
-    VideoStatus.Thumbnail,
-  ].includes(status);
+const isVideoInProgress = (status: string) =>
+  ["scripted", "recorded", "edited", "thumbnail"].includes(status);
 
 // Helper function to check if a video is planned
-const isVideoPlanned = (status: VideoStatus) => status === VideoStatus.Idle;
+const isVideoPlanned = (status: string) => status === "idle";
 
 // Helper function to check if a video is created but not published
-const isVideoCreated = (status: VideoStatus) => status === VideoStatus.Created;
+const isVideoCreated = (status: string) => status === "created";
 
 // Helper to get the month-year string from a date
 const getMonthYear = (date: Date | string) => {

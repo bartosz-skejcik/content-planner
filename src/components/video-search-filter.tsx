@@ -1,13 +1,8 @@
 import { useState, useEffect } from "react";
-import {
-  Video,
-  VideoStatus,
-  VideoType,
-  VideoPriority,
-  VideoPlatform,
-} from "@/types/video";
+import { Video, VideoPlatform } from "@/types/video";
 import { Input } from "@/components/ui/input";
 import MultiSelector from "@/components/ui/multi-select";
+import { useSettingsStore } from "@/stores/settingsStore";
 
 type VideoSearchFilterProps = {
   videos: Video[];
@@ -19,10 +14,20 @@ const VideoSearchFilter: React.FC<VideoSearchFilterProps> = ({
   onFilter,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilters, setStatusFilters] = useState<VideoStatus[]>([]);
-  const [typeFilters, setTypeFilters] = useState<VideoType[]>([]);
-  const [priorityFilters, setPriorityFilters] = useState<VideoPriority[]>([]);
+  const [statusFilters, setStatusFilters] = useState<string[]>([]);
+  const [typeFilters, setTypeFilters] = useState<string[]>([]);
+  const [priorityFilters, setPriorityFilters] = useState<string[]>([]);
   const [platformFilters, setPlatformFilters] = useState<VideoPlatform[]>([]);
+
+  const types = useSettingsStore((state) => state.settings["type"]);
+  const VideoType = types.items.map((type) => type.value) ?? [];
+
+  const statuses = useSettingsStore((state) => state.settings["status"]);
+  const VideoStatus = statuses.items.map((status) => status.value) ?? [];
+
+  const priorities = useSettingsStore((state) => state.settings["priority"]);
+  const VideoPriority =
+    priorities.items.map((priority) => priority.value) ?? [];
 
   useEffect(() => {
     handleSearch();
@@ -80,10 +85,9 @@ const VideoSearchFilter: React.FC<VideoSearchFilterProps> = ({
             label: status.charAt(0).toUpperCase() + status.slice(1),
           }))}
           onChange={(options) => {
-            setStatusFilters(
-              options.map((option) => option.value as VideoStatus),
-            );
+            setStatusFilters(options.map((option) => option.value));
           }}
+          placeholder="Enter status"
         />
 
         <MultiSelector
@@ -92,8 +96,9 @@ const VideoSearchFilter: React.FC<VideoSearchFilterProps> = ({
             label: type.charAt(0).toUpperCase() + type.slice(1),
           }))}
           onChange={(options) => {
-            setTypeFilters(options.map((option) => option.value as VideoType));
+            setTypeFilters(options.map((option) => option.value));
           }}
+          placeholder="Enter type"
         />
 
         <MultiSelector
@@ -102,10 +107,9 @@ const VideoSearchFilter: React.FC<VideoSearchFilterProps> = ({
             label: priority.charAt(0).toUpperCase() + priority.slice(1),
           }))}
           onChange={(options) => {
-            setPriorityFilters(
-              options.map((option) => option.value as VideoPriority),
-            );
+            setPriorityFilters(options.map((option) => option.value));
           }}
+          placeholder="Enter priority"
         />
 
         <MultiSelector
@@ -118,6 +122,7 @@ const VideoSearchFilter: React.FC<VideoSearchFilterProps> = ({
               options.map((option) => option.value as VideoPlatform),
             );
           }}
+          placeholder="Enter platform"
         />
       </div>
     </div>
