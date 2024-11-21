@@ -1,6 +1,6 @@
 [package]
 name = "content-planner"
-version = "0.4.2"
+version = "0.4.3"
 description = "A tool designer to make content planning and management easier."
 authors = ["Bartłomiej Paczesny"]
 edition = "2021"
