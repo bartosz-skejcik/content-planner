@@ -183,7 +183,7 @@ CREATE TABLE idea_bank (
     description TEXT,
     duration TEXT NOT NULL,
     content_type TEXT NOT NULL,
-    target_audience TEXT NOT NULL CHECK (target_audience IN ('beginner', 'intermediate', 'advanced')),
+    target_audience TEXT NOT NULL,
     outline TEXT,
     is_favorite BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

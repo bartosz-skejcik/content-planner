@@ -4,7 +4,9 @@ import { Idea } from "@/types/idea";
 import { Tag } from "@/types/tags";
 import { IdeaRow, TagRow } from "@/types/database";
 import { initializeStore } from "./database";
-import { updateIdea } from "@/helpers/idea-bank";
+import { generateId, updateIdea } from "@/helpers/idea-bank";
+import { videoSchema } from "./videoStore";
+import { Video, VideoPlatform } from "@/types/video";
 
 // Zod schema for validation
 const ideaSchema = z.object({
@@ -45,6 +47,11 @@ export const useIdeaBankStore = create<{
   updateIdea: (id: string, data: Partial<Idea>) => Promise<void>;
   deleteIdea: (id: string) => Promise<void>;
   loadIdeas: () => Promise<void>;
+  convertToVideoPlan: (
+    idea: Idea,
+    deadline: Date,
+    priority: Video["priority"],
+  ) => Promise<void>;
 }>((set, get) => ({
   ideas: [],
   tags: [],
@@ -102,13 +109,14 @@ export const useIdeaBankStore = create<{
     const db = await initializeStore();
     if (!db) return;
 
-    idea.id = idea.id ?? Math.random().toString(36).substring(2, 11);
-    let validatedIdea;
+    idea.id = idea.id ?? generateId();
+    let validatedIdea: Idea;
+
     try {
+      // @ts-ignore
       validatedIdea = ideaSchema.parse(idea);
     } catch (error: any) {
-      const errors = JSON.parse(JSON.stringify(error));
-      throw errors.issues[0];
+      throw error.message;
     }
 
     const queryIdea = `
@@ -199,6 +207,62 @@ export const useIdeaBankStore = create<{
       set({ ideas: updatedIdeas });
     } catch (error: any) {
       throw error.message;
+    }
+  },
+
+  // Convert an idea to a video plan
+  convertToVideoPlan: async (idea, deadline, priority) => {
+    const db = await initializeStore();
+    if (!db) return;
+    let validatedVideo;
+
+    const video: Video = {
+      id: idea.id ?? generateId(),
+      title: idea.title,
+      description: idea.description,
+      link: "",
+      status: "idle",
+      platform: VideoPlatform.YouTube,
+      type: idea.content_type,
+      deadline,
+      priority,
+      created_at: new Date(),
+    };
+
+    try {
+      validatedVideo = videoSchema.parse(video);
+    } catch (error: any) {
+      console.error("Failed to validate video:", error);
+      throw error.message;
+    }
+
+    const query = `INSERT INTO videos (id, title, description, link, status, platform, type, priority, tags, deadline, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+    const params = [
+      validatedVideo.id,
+      validatedVideo.title,
+      validatedVideo.description ?? null,
+      validatedVideo.link ?? null,
+      validatedVideo.status,
+      validatedVideo.platform,
+      validatedVideo.type,
+      validatedVideo.priority,
+      validatedVideo.tags ?? "",
+      validatedVideo.deadline.toISOString(),
+      validatedVideo.created_at.toISOString(),
+    ];
+
+    try {
+      await db.execute(query, params);
+
+      // remove idea from the idea bank
+      await db.execute(`DELETE FROM idea_bank WHERE id = ?`, [idea.id]);
+
+      const updatedIdeas = get().ideas.filter((i) => i.id !== idea.id);
+      set({ ideas: updatedIdeas });
+    } catch (error: any) {
+      console.error("Failed to convert idea to video:", error);
+      throw error;
     }
   },
 }));

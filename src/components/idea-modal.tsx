@@ -52,7 +52,7 @@ const ideaSchema = z.object({
     .regex(/^\d+:\d+$/),
   content_type: z.string(),
   target_audience: z.string(),
-  outline: z.string().nullable().optional(),
+  outline: z.string().optional(),
   is_favorite: z.boolean().default(false),
   created_at: z.date(),
   updated_at: z.date(),
@@ -104,7 +104,7 @@ export default function IdeaBankModal({
       duration: null as string | null,
       content_type: "idle", // Default content type
       target_audience: null as string | null,
-      outline: null as string | null,
+      outline: undefined as string | undefined,
       is_favorite: false,
       created_at: new Date(),
       updated_at: new Date(),
@@ -136,7 +136,7 @@ export default function IdeaBankModal({
         duration: null,
         content_type: "idle",
         target_audience: "",
-        outline: null,
+        outline: undefined,
         is_favorite: false,
         created_at: new Date(),
         updated_at: new Date(),
@@ -169,11 +169,23 @@ export default function IdeaBankModal({
       setOpen(false);
     } catch (error: any) {
       console.error("Form submission error", error);
-      toast({
-        title: "Error",
-        description: "Failed to submit the idea. Please try again.",
-        variant: "destructive",
-      });
+      // check if the error is an array
+      if (Array.isArray(error)) {
+        error.forEach((e) => {
+          console.log(e);
+          toast({
+            title: "Error",
+            description: "Failed to submit the idea. Please try again.",
+            variant: "destructive",
+          });
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to submit the idea. Please try again.",
+          variant: "destructive",
+        });
+      }
     }
   }
 
