@@ -24,6 +24,7 @@ import { useSettingsStore } from "./stores/settingsStore";
 import SettingsView from "./views/settings";
 import { useUpdater } from "./hooks/use-updater";
 import ProgressBar from "./components/progress-bar";
+import { useToast } from "./hooks/use-toast";
 
 export type ActiveTab =
   | "videos"
@@ -47,7 +48,15 @@ function App() {
 
   const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null);
 
-  const { progress, showProgressDialog, checkForUpdates } = useUpdater(); // Use the updater hook
+  const { toast } = useToast(); // Use the toast hook
+
+  const { progress, showProgressDialog, checkForUpdates } = useUpdater(toast); // Use the updater hook
+
+  // @ts-ignore
+  const RUNNING_IN_TAURI = window.__TAURI__ !== undefined;
+  if (RUNNING_IN_TAURI) {
+    checkForUpdates();
+  }
 
   useEffect(() => {
     // Load the videos from the store
@@ -56,8 +65,6 @@ function App() {
 
     settingsStore.initializeSettings();
     settingsStore.loadSetings();
-
-    checkForUpdates(); // Check for updates on app load
   }, []);
 
   const ActiveTabComponent = () => {
