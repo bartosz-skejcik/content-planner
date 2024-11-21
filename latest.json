@@ -1,0 +1,23 @@
+{
+  "version": "0.4.1",
+  "notes": "See the assets to download this version and install.",
+  "pub_date": "2024-11-21T00:51:45.846Z",
+  "platforms": {
+    "darwin-aarch64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVScUdHdkh6NERCZUNYMXkzSmRTb293eXpJaTZVdnoyTTRWbWtpK0t4WnRvWWV4R3ZrczQ1czVzYzk2amNvSm1vNk5DRENzRWRNRTFTdENRVGJrK0l4c3hYSldLN2JGUkFjPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzMyMTQ5NzQ4CWZpbGU6Y29udGVudC1wbGFubmVyLmFwcC50YXIuZ3oKc2lHZzdveGN1bW1xazRrT0wrdmVLSFhnMDZSTVNoQk9sbUJyRTB3dmRZVFp6T3BIQWhJZkk2c0c4dEh1OElVbUtZaEJPZVRFaVZGU1c4TldmMzZoQ3c9PQo=",
+      "url": "https://github.com/bartosz-skejcik/content-planner/releases/download/content-manager-v0.4.1/content-planner_aarch64.app.tar.gz"
+    },
+    "darwin-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVScUdHdkh6NERCZUpBQWxvVUhCenFNTE1wT1U0YUF2b2VmbXViUFZBOXZBL1BER2NkaUx3MmNSRTJsMmxnbHczcGpqeVhFdjcweXMvOVhEWEQ2WERnL2lTZUdMMnNmTndBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzMyMTQ5NzY1CWZpbGU6Y29udGVudC1wbGFubmVyLmFwcC50YXIuZ3oKRUhzR09uSTZiY1pueWQ2ZitzNll5T1NYUmRKN20reWdGeTFQN2tyTEtqOW9NVUdId2VJTVp3L2NabjlFZUI5MUZkb3NlRk9nZXkrVElpY3lSZWxCQ1E9PQo=",
+      "url": "https://github.com/bartosz-skejcik/content-planner/releases/download/content-manager-v0.4.1/content-planner_x64.app.tar.gz"
+    },
+    "linux-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVScUdHdkh6NERCZUdhU0VzS1A0ZHpoMWwraCtnZ1hudzRicXBLUHY5UCs3dERHbSt2OGRKZmxiUGJwam5rTGJuMHFCQ0lXQVJXUVlKeitBM2dkWk9qWWpVb3IvZnlYeEFNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzMyMTQ5OTkzCWZpbGU6Y29udGVudC1wbGFubmVyXzAuNC4xX2FtZDY0LkFwcEltYWdlClpyNGJDL3RiUkI4NXprNFhydEF5eDlocHk4ek4rVVFLMWFocTVicnVGZWJSRGRpMXVsSHVQaG84WVpRaGFhSWpudUMyVE5WaUhnd1JnODd2RTNBMEJBPT0K",
+      "url": "https://github.com/bartosz-skejcik/content-planner/releases/download/content-manager-v0.4.1/content-planner_0.4.1_amd64.AppImage"
+    },
+    "windows-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVScUdHdkh6NERCZUdkMzB1V1d2VloydkRpMTJZMzF6TXRDMjVkMktVRkt4SU8vOXZKQWFkam9pSWRWYkplNDBwekJQZlRQMGliT1ZXak5rTEM4R1RSb1dicGtGZW5qVVFvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzMyMTUwMzAzCWZpbGU6Y29udGVudC1wbGFubmVyXzAuNC4xX3g2NF9lbi1VUy5tc2kKcW53dENkQm50OTNmYXk0Ti9lbTRxUm1WRkFvS09NWUppazhVYmdsMnlnMk9jOWQzcHRIZnB5RFlEQ0lRb1hoYW5Lck5JWVEybHhEYmdhNTdWYTB0QXc9PQo=",
+      "url": "https://github.com/bartosz-skejcik/content-planner/releases/download/content-manager-v0.4.1/content-planner_0.4.1_x64_en-US.msi"
+    }
+  }
+}
