@@ -161,7 +161,7 @@ export const useSettingsStore = create<{
     const defaultSettings = [
       { id: generateId(), value: "idle", category: "status" },
       { id: generateId(), value: "scripted", category: "status" },
-      { id: generateId(), value: "recorder", category: "status" },
+      { id: generateId(), value: "recorded", category: "status" },
       { id: generateId(), value: "edited", category: "status" },
       { id: generateId(), value: "thumbnail", category: "status" },
       { id: generateId(), value: "created", category: "status" },
