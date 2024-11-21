@@ -35,7 +35,7 @@
         "installMode": "basicUi"
       },
       "endpoints": [
-        "https://raw.githubusercontent.com/bartosz-skejcik/content-planner/refs/heads/master/latest.json"
+        "https://github.com/bartosz-skejcik/content-planner/releases/latest/download/latest.json"
       ]
     }
   },
