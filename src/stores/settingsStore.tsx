@@ -161,7 +161,7 @@ export const useSettingsStore = create<{
     const defaultSettings = [
       { id: generateId(), value: "idle", category: "status" },
       { id: generateId(), value: "scripted", category: "status" },
-      { id: generateId(), value: "recorder", category: "status" },
+      { id: generateId(), value: "recorded", category: "status" },
       { id: generateId(), value: "edited", category: "status" },
       { id: generateId(), value: "thumbnail", category: "status" },
       { id: generateId(), value: "created", category: "status" },
@@ -174,7 +174,7 @@ export const useSettingsStore = create<{
       { id: generateId(), value: "other", category: "type" },
       { id: generateId(), value: "low", category: "priority" },
       { id: generateId(), value: "medium", category: "priority" },
-      { id: generateId(), value: "high", category: "" },
+      { id: generateId(), value: "high", category: "priority" },
       { id: generateId(), value: "everyone", category: "target audience" },
       { id: generateId(), value: "beginner", category: "target audience" },
       { id: generateId(), value: "intermediate", category: "target audience" },

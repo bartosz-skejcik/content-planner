@@ -4,7 +4,7 @@ import { Video, VideoPlatform } from "@/types/video";
 import { initializeStore } from "./database";
 
 // Define the Zod schema to validate video data
-const videoSchema = z.object({
+export const videoSchema = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string(),

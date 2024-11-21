@@ -14,17 +14,18 @@ import DashboardView from "@/views/dashboard";
 import { useVideoStore } from "@/stores/videoStore"; // Import the Zustand store
 import VideoModal from "@/components/video-modal";
 import { Video } from "@/types/video";
-import { Toaster } from "./components/ui/toaster";
-import ScheduleView from "./views/schedule";
-import IdeaBank from "./views/idea-bank";
-import { useIdeaBankStore } from "./stores/ideaBankStore";
-import { Idea } from "./types/idea";
-import IdeaBankModal from "./components/idea-modal";
-import { useSettingsStore } from "./stores/settingsStore";
-import SettingsView from "./views/settings";
-import { useUpdater } from "./hooks/use-updater";
-import ProgressBar from "./components/progress-bar";
-import { useToast } from "./hooks/use-toast";
+import { Toaster } from "@/components/ui/toaster";
+import ScheduleView from "@/views/schedule";
+import IdeaBank from "@/views/idea-bank";
+import { useIdeaBankStore } from "@/stores/ideaBankStore";
+import { Idea } from "@/types/idea";
+import IdeaBankModal from "@/components/idea-modal";
+import { useSettingsStore } from "@/stores/settingsStore";
+import SettingsView from "@/views/settings";
+import { useUpdater } from "@/hooks/use-updater";
+import ProgressBar from "@/components/progress-bar";
+import { useToast } from "@/hooks/use-toast";
+import { ConfirmationModalProvider } from "@/providers/modal-provider";
 
 export type ActiveTab =
   | "videos"
@@ -45,7 +46,6 @@ function App() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isIdeaModalOpen, setIsIdeaModalOpen] = useState(false);
-
   const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null);
 
   const { toast } = useToast(); // Use the toast hook
@@ -104,42 +104,44 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-      <Toaster />
-      <SidebarProvider
-        style={
-          {
-            "--sidebar-width": "15rem",
-          } as React.CSSProperties
-        }
-      >
-        <AppSidebar onNavigate={setActiveTab} currentTab={activeTab} />
-        <SidebarInset>
-          <header className="flex shrink-0 sticky top-0 bg-background items-center gap-2 px-4 pt-4 pb-3">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
-            <ModeToggle />
-            <VideoModal
-              video={selectedVideo}
-              open={isModalOpen}
-              setOpen={setIsModalOpen}
-              resetSelectedVideo={() => setSelectedVideo(null)}
-              triggerVisible={activeTab === "videos"}
-            />
-            <IdeaBankModal
-              idea={selectedIdea}
-              open={isIdeaModalOpen}
-              setOpen={setIsIdeaModalOpen}
-              resetSelectedIdea={() => setSelectedIdea(null)}
-              triggerVisible={activeTab === "ideas"}
-            />
-          </header>
-          <div className="flex flex-1 justify-start flex-col gap-4 w-full mx-auto pb-2">
-            <ActiveTabComponent />
-          </div>
-        </SidebarInset>
-      </SidebarProvider>
-      {showProgressDialog && <ProgressBar progress={progress} />}
+      <ConfirmationModalProvider>
+        <Toaster />
+        <SidebarProvider
+          style={
+            {
+              "--sidebar-width": "15rem",
+            } as React.CSSProperties
+          }
+        >
+          <AppSidebar onNavigate={setActiveTab} currentTab={activeTab} />
+          <SidebarInset>
+            <header className="flex shrink-0 sticky top-0 bg-background items-center gap-2 px-4 pt-4 pb-3">
+              <SidebarTrigger className="-ml-1" />
+              <Separator orientation="vertical" className="mr-2 h-4" />
+              {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+              <ModeToggle />
+              <VideoModal
+                video={selectedVideo}
+                open={isModalOpen}
+                setOpen={setIsModalOpen}
+                resetSelectedVideo={() => setSelectedVideo(null)}
+                triggerVisible={activeTab === "videos"}
+              />
+              <IdeaBankModal
+                idea={selectedIdea}
+                open={isIdeaModalOpen}
+                setOpen={setIsIdeaModalOpen}
+                resetSelectedIdea={() => setSelectedIdea(null)}
+                triggerVisible={activeTab === "ideas"}
+              />
+            </header>
+            <div className="flex flex-1 justify-start flex-col gap-4 w-full mx-auto pb-2">
+              <ActiveTabComponent />
+            </div>
+          </SidebarInset>
+        </SidebarProvider>
+        {showProgressDialog && <ProgressBar progress={progress} />}
+      </ConfirmationModalProvider>
     </ThemeProvider>
   );
 }

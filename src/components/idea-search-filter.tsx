@@ -30,6 +30,7 @@ const IdeaSearchFilter: React.FC<IdeaSearchFilterProps> = ({
 
   useEffect(() => {
     tagStore.fetchTags();
+    console.log("Idea Search Filter (tagStore.tags):", tagStore.tags);
   }, []);
 
   useEffect(() => {

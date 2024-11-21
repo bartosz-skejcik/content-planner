@@ -40,7 +40,7 @@ import { useSettingsStore } from "@/stores/settingsStore";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  link: z.string().url("Invalid URL").optional(),
+  link: z.string().optional(),
   description: z.string(),
   status: z.string(),
   platform: z.nativeEnum(VideoPlatform),
