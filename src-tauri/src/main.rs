@@ -7,6 +7,12 @@ use serde_json::json;
 use std::env;
 use tauri_plugin_sql::{Builder, Migration, MigrationKind};
 
+#[tauri::command]
+fn graceful_restart() {
+    // Perform any necessary cleanup, then restart the app
+    std::process::exit(0);
+}
+
 // Define the structure for the video attributes
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Video {
@@ -237,13 +243,17 @@ ALTER TABLE settings DROP COLUMN title;
     ];
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(
             Builder::default()
                 .add_migrations("sqlite:content-planner.db", migrations)
                 .build(),
         )
         .plugin(tauri_plugin_shell::init())
-        .invoke_handler(tauri::generate_handler![generate_ai_response])
+        .invoke_handler(tauri::generate_handler![
+            generate_ai_response,
+            graceful_restart
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

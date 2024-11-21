@@ -22,6 +22,8 @@ import { Idea } from "./types/idea";
 import IdeaBankModal from "./components/idea-modal";
 import { useSettingsStore } from "./stores/settingsStore";
 import SettingsView from "./views/settings";
+import { useUpdater } from "./hooks/use-updater";
+import ProgressBar from "./components/progress-bar";
 
 export type ActiveTab =
   | "videos"
@@ -45,6 +47,8 @@ function App() {
 
   const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null);
 
+  const { progress, showProgressDialog, checkForUpdates } = useUpdater(); // Use the updater hook
+
   useEffect(() => {
     // Load the videos from the store
     useVideoStore.getState().loadVideos();
@@ -52,6 +56,8 @@ function App() {
 
     settingsStore.initializeSettings();
     settingsStore.loadSetings();
+
+    checkForUpdates(); // Check for updates on app load
   }, []);
 
   const ActiveTabComponent = () => {
@@ -126,6 +132,7 @@ function App() {
           </div>
         </SidebarInset>
       </SidebarProvider>
+      {showProgressDialog && <ProgressBar progress={progress} />}
     </ThemeProvider>
   );
 }
