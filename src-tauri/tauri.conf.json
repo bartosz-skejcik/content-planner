@@ -30,9 +30,10 @@
       "preload": ["sqlite:content-planner.db"]
     },
     "updater": {
+      "dialog": false,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDc4QzE4MENGQzc2QjE4NkEKUldScUdHdkh6NERCZUQxcUNVUnlOLzJZMHJRUG9CWEpGenpnU3QxTFVteHo4aGw5V0crWUI2ajkK",
       "windows": {
-        "installMode": "basicUi"
+        "installMode": "passive"
       },
       "endpoints": [
         "https://github.com/bartosz-skejcik/content-planner/releases/latest/download/latest.json"
