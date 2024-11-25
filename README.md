@@ -3,7 +3,7 @@
 Content Planner is a powerful and efficient tool for planning and managing your content creation process, written primarily in TypeScript with some components in Rust.
 
 ## Quick Demo
-![](https://streamable.com/8k2ubd)
+[![Product demo](https://i.sstatic.net/VHgdYdNIShc.png)](https://www.youtube.com/watch?v=VHgdYdNIShc)
 
 To see Content Planner in action, follow these steps:
 
